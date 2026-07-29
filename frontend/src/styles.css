@@ -1,0 +1,756 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #eafafa;
+  color: #1f1f1f;
+}
+
+button {
+  background-color: #2f6dde;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 22px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #2459b8;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-page {
+  min-height: 100vh;
+  background-color: #eafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  background-color: #050f9f;
+  color: white;
+  font-weight: bold;
+  font-size: 28px;
+  padding: 18px;
+  margin-bottom: 35px;
+  text-align: left;
+  width: fit-content;
+}
+
+.logo.small {
+  font-size: 24px;
+  margin-bottom: 30px;
+  padding: 14px;
+}
+
+.login-card {
+  width: 360px;
+  background-color: #c8d6ff;
+  padding: 35px;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-card input {
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+.register-text {
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.error-message {
+  color: #b00020;
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* =========================
+   LAYOUT GENERAL
+========================= */
+
+.admin-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background-color: #eafafa;
+}
+
+.sidebar {
+  background-color: #c8d6ff;
+  padding: 30px 24px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar h3 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-button {
+  width: 100%;
+  background-color: transparent;
+  color: #333;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+
+.menu-button:hover {
+  background-color: #eafafa;
+  color: #050f9f;
+}
+
+.menu-button.active {
+  background-color: #2f6dde;
+  color: white;
+  font-weight: bold;
+}
+
+.page-area {
+  min-width: 0;
+  padding: 28px;
+}
+
+.top-header {
+  background-color: #c8d6ff;
+  min-height: 90px;
+  border-radius: 14px;
+  padding: 20px 28px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.top-header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.top-header p {
+  margin: 4px 0 0;
+  color: #555;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 16px;
+}
+
+.page-content {
+  background-color: rgba(255, 255, 255, 0.35);
+  border-radius: 18px;
+  padding: 20px;
+  min-height: calc(100vh - 170px);
+}
+
+/* =========================
+   CONTENIDO GENERAL
+========================= */
+
+.content {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+}
+
+.content h1 {
+  font-size: 34px;
+  margin: 10px 0 8px;
+}
+
+.content > p {
+  font-size: 18px;
+  margin-top: 0;
+  color: #555;
+}
+
+.info-message {
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+/* =========================
+   DASHBOARD / REPORTES
+========================= */
+
+.summary-grid {
+  margin: 35px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 950px;
+}
+
+.summary-card {
+  background-color: #f5f5f5;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.summary-card p {
+  margin: 15px 0 0;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.report-grid {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reports-table {
+  width: 950px;
+}
+
+/* =========================
+   FORMULARIOS
+========================= */
+
+.form-card {
+  width: 650px;
+  margin: 30px auto;
+  background-color: #c8d6ff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-card h2 {
+  margin: 0 0 10px;
+}
+
+.form-card input,
+.form-card select {
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.secondary-button {
+  background-color: #777;
+}
+
+.secondary-button:hover {
+  background-color: #555;
+}
+
+.product-form,
+.user-form {
+  width: 760px;
+}
+
+/* =========================
+   TABLAS
+========================= */
+
+.table-card {
+  width: 850px;
+  margin: 30px auto;
+  background-color: #f5f5f5;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  overflow-x: auto;
+}
+
+.table-card h2 {
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th {
+  background-color: #c8d6ff;
+  padding: 12px;
+  text-align: left;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.small-button {
+  padding: 7px 12px;
+  font-size: 14px;
+  margin: 4px;
+}
+
+.danger-button {
+  background-color: #d93636;
+}
+
+.danger-button:hover {
+  background-color: #b52b2b;
+}
+
+.products-table {
+  width: 1050px;
+}
+
+.products-table table {
+  font-size: 15px;
+}
+
+.users-table {
+  width: 1100px;
+}
+
+.users-table table {
+  font-size: 14px;
+}
+
+/* =========================
+   VISTA CLIENTE / CATÁLOGO
+========================= */
+
+.cliente-content {
+  padding-top: 0;
+}
+
+.cliente-hero {
+  background: linear-gradient(135deg, #c8d6ff, #f5f8ff);
+  border-radius: 18px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.cliente-hero h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+}
+
+.cliente-hero p {
+  margin: 0;
+  color: #555;
+  font-size: 17px;
+}
+
+.cliente-badge {
+  background-color: white;
+  border-radius: 16px;
+  padding: 18px 24px;
+  text-align: center;
+  min-width: 150px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.cliente-badge span {
+  display: block;
+  font-size: 34px;
+  font-weight: bold;
+  color: #2f6dde;
+}
+
+.cliente-badge p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.cliente-message {
+  background-color: #f5f5f5;
+  max-width: 600px;
+  margin: 0 auto 24px;
+  padding: 12px 18px;
+  border-radius: 12px;
+}
+
+.cliente-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 28px;
+  align-items: start;
+}
+
+.catalog-section {
+  width: 100%;
+  text-align: left;
+}
+
+.section-title {
+  margin-bottom: 18px;
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.section-title p {
+  margin: 4px 0 0;
+  color: #666;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(210px, 1fr));
+  gap: 22px;
+}
+
+.product-card {
+  background-color: white;
+  border-radius: 18px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.11);
+  display: flex;
+  flex-direction: column;
+  min-height: 430px;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  transition: 0.2s ease;
+}
+
+.product-image {
+  height: 150px;
+  background: linear-gradient(135deg, #d6e0ff, #eafafa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image span {
+  width: 72px;
+  height: 72px;
+  background-color: #2f6dde;
+  color: white;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 18px;
+  flex: 1;
+}
+
+.category-pill {
+  display: inline-block;
+  background-color: #eafafa;
+  color: #050f9f;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.product-info h3 {
+  margin: 0 0 10px;
+  color: #050f9f;
+  font-size: 22px;
+}
+
+.product-description {
+  color: #444;
+  min-height: 48px;
+  margin-bottom: 16px;
+}
+
+.product-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-details p {
+  margin: 0;
+}
+
+.product-price {
+  color: #2f6dde;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.product-card > button {
+  margin: 0 18px 18px;
+  width: calc(100% - 36px);
+}
+
+/* =========================
+   CARRITO
+========================= */
+
+.cart-card {
+  background-color: white;
+  border-radius: 18px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.11);
+  position: sticky;
+  top: 25px;
+}
+
+.cart-card h2 {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 26px;
+}
+
+.empty-cart {
+  background-color: #f5f8ff;
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+}
+
+.empty-cart p {
+  margin: 0 0 6px;
+  font-weight: bold;
+}
+
+.empty-cart span {
+  color: #666;
+  font-size: 14px;
+}
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cart-item {
+  background-color: #f5f8ff;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.cart-item h4 {
+  margin: 0 0 4px;
+}
+
+.cart-item p {
+  margin: 0 0 8px;
+  color: #555;
+}
+
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.cart-controls button {
+  padding: 4px 11px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.cart-controls span {
+  font-weight: bold;
+  min-width: 24px;
+  text-align: center;
+}
+
+.cart-subtotal {
+  font-weight: bold;
+  color: #333 !important;
+}
+
+.cart-total {
+  margin: 20px 0 14px;
+  padding-top: 16px;
+  border-top: 2px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+}
+
+.cart-total strong {
+  color: #2f6dde;
+}
+
+.cart-card > button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.cart-card .secondary-button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* =========================
+   ACCESO DENEGADO
+   Puedes dejarlo aunque ya no se use
+========================= */
+
+.access-denied-card {
+  max-width: 600px;
+  margin: 80px auto;
+  background-color: #f5f5f5;
+  border-radius: 16px;
+  padding: 35px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.access-denied-card h1 {
+  color: #d93636;
+}
+
+.access-denied-card p {
+  font-size: 18px;
+  color: #333;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .cliente-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-card {
+    position: static;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: auto;
+    position: static;
+  }
+
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .top-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cliente-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .cliente-badge {
+    width: 100%;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(210px, 1fr));
+  }
+
+  .form-card,
+  .product-form,
+  .user-form,
+  .table-card,
+  .products-table,
+  .users-table,
+  .reports-table {
+    width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
