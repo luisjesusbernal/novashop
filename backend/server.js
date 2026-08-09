@@ -11,6 +11,7 @@ const productosRoutes = require("./routes/productos.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const catalogoRoutes = require("./routes/catalogo.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
+const pedidosRoutes = require("./routes/pedidos.routes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/productos", verificarToken, soloAdmin, productosRoutes);
 app.use("/api/usuarios", verificarToken, soloAdmin, usuariosRoutes);
 app.use("/api/dashboard", verificarToken, soloAdmin, dashboardRoutes);
 app.use("/api/catalogo", verificarToken, catalogoRoutes);
+app.use("/api/pedidos", verificarToken, pedidosRoutes);
 
 // Ruta de prueba general
 app.get("/", (req, res) => {
