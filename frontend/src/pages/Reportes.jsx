@@ -3,11 +3,14 @@ import API_URL, { getAuthHeaders } from "../services/api";
 
 function Reportes() {
   const [resumen, setResumen] = useState({
-    usuarios: 0,
-    productos: 0,
-    categorias: 0,
-    stock_bajo: 0
-  });
+  usuarios: 0,
+  productos: 0,
+  categorias: 0,
+  stock_bajo: 0,
+  pedidos: 0,
+  ventas_totales: 0,
+  pedidos_pendientes: 0
+});
 
   const [productosStockBajo, setProductosStockBajo] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -61,27 +64,42 @@ function Reportes() {
       <h1>Reportes</h1>
       <p>Resumen de información de la tienda</p>
 
-      <div className="summary-grid report-grid">
-        <div className="summary-card">
-          <h3>Usuarios</h3>
-          <p>{resumen.usuarios}</p>
-        </div>
+      <div className="summary-grid reports-grid">
+  <div className="summary-card">
+    <h3>Usuarios</h3>
+    <p>{resumen.usuarios}</p>
+  </div>
 
-        <div className="summary-card">
-          <h3>Productos</h3>
-          <p>{resumen.productos}</p>
-        </div>
+  <div className="summary-card">
+    <h3>Productos</h3>
+    <p>{resumen.productos}</p>
+  </div>
 
-        <div className="summary-card">
-          <h3>Categorías</h3>
-          <p>{resumen.categorias}</p>
-        </div>
+  <div className="summary-card">
+    <h3>Categorías</h3>
+    <p>{resumen.categorias}</p>
+  </div>
 
-        <div className="summary-card">
-          <h3>Stock bajo</h3>
-          <p>{resumen.stock_bajo}</p>
-        </div>
-      </div>
+  <div className="summary-card">
+    <h3>Stock bajo</h3>
+    <p>{resumen.stock_bajo}</p>
+  </div>
+
+  <div className="summary-card">
+    <h3>Pedidos</h3>
+    <p>{resumen.pedidos}</p>
+  </div>
+
+  <div className="summary-card">
+    <h3>Ventas totales</h3>
+    <p>${Number(resumen.ventas_totales).toFixed(2)}</p>
+  </div>
+
+  <div className="summary-card">
+    <h3>Pendientes</h3>
+    <p>{resumen.pedidos_pendientes}</p>
+  </div>
+</div>
 
       <section className="table-card reports-table">
         <h2>Reporte de productos con bajo stock</h2>
