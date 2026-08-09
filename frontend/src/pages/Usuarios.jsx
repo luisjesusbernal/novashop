@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API_URL, { getAuthHeaders } from "../services/api";
 
-function Usuarios() {
+function Usuarios({ usuarioActual }) {
   const [usuarios, setUsuarios] = useState([]);
 
   const [nombre, setNombre] = useState("");
@@ -20,8 +20,8 @@ function Usuarios() {
     async function cargarUsuarios() {
       try {
         const respuesta = await fetch(`${API_URL}/usuarios`, {
-        headers: getAuthHeaders()
-      });
+          headers: getAuthHeaders(),
+        });
         const datos = await respuesta.json();
 
         if (activo) {
@@ -42,8 +42,8 @@ function Usuarios() {
   const obtenerUsuarios = async () => {
     try {
       const respuesta = await fetch(`${API_URL}/usuarios`, {
-      headers: getAuthHeaders()
-    });
+        headers: getAuthHeaders(),
+      });
       const datos = await respuesta.json();
       setUsuarios(datos);
     } catch (error) {
@@ -98,7 +98,7 @@ function Usuarios() {
             correo,
             telefono,
             direccion,
-            id_rol: idRol
+            id_rol: idRol,
           }
         : {
             nombre,
@@ -106,13 +106,13 @@ function Usuarios() {
             password,
             telefono,
             direccion,
-            id_rol: idRol
+            id_rol: idRol,
           };
 
       const respuesta = await fetch(url, {
         method: metodo,
         headers: getAuthHeaders(),
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
 
       const datos = await respuesta.json();
@@ -143,7 +143,9 @@ function Usuarios() {
   };
 
   const eliminarUsuario = async (id) => {
-    const confirmar = window.confirm("¿Seguro que deseas eliminar este usuario?");
+    const confirmar = window.confirm(
+      "¿Seguro que deseas eliminar este usuario?",
+    );
 
     if (!confirmar) {
       return;
@@ -151,9 +153,9 @@ function Usuarios() {
 
     try {
       const respuesta = await fetch(`${API_URL}/usuarios/${id}`, {
-      method: "DELETE",
-      headers: getAuthHeaders()
-    });
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
 
       const datos = await respuesta.json();
 
@@ -184,12 +186,12 @@ function Usuarios() {
 
     try {
       const respuesta = await fetch(`${API_URL}/usuarios/${id}/password`, {
-      method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({
-      password: nuevaPassword
-      })
-    });
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          password: nuevaPassword,
+        }),
+      });
 
       const datos = await respuesta.json();
 
@@ -244,7 +246,11 @@ function Usuarios() {
             onChange={(e) => setTelefono(e.target.value)}
           />
 
-          <select value={idRol} onChange={(e) => setIdRol(e.target.value)}>
+          <select
+            value={idRol}
+            onChange={(e) => setIdRol(e.target.value)}
+            disabled={idEditando === usuarioActual.id_usuario}
+          >
             <option value="1">Administrador</option>
             <option value="2">Cliente</option>
           </select>
@@ -258,12 +264,14 @@ function Usuarios() {
         />
 
         <div className="form-actions">
-          <button type="submit">
-            {idEditando ? "Actualizar" : "Guardar"}
-          </button>
+          <button type="submit">{idEditando ? "Actualizar" : "Guardar"}</button>
 
           {idEditando && (
-            <button type="button" className="secondary-button" onClick={limpiarFormulario}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={limpiarFormulario}
+            >
               Cancelar
             </button>
           )}
@@ -312,6 +320,7 @@ function Usuarios() {
 
                   <button
                     className="small-button danger-button"
+                    disabled={usuario.id_usuario === usuarioActual.id_usuario}
                     onClick={() => eliminarUsuario(usuario.id_usuario)}
                   >
                     Eliminar

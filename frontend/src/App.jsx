@@ -39,7 +39,7 @@ function App() {
 
     if (paginaActual === "productos") return <Productos />;
     if (paginaActual === "categorias") return <Categorias />;
-    if (paginaActual === "usuarios") return <Usuarios />;
+    if (paginaActual === "usuarios") return <Usuarios usuarioActual={usuario} />;
     if (paginaActual === "reportes") return <Reportes />;
     if (paginaActual === "pedidos") return <Pedidos />;
 
