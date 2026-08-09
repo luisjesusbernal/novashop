@@ -827,3 +827,23 @@ td {
 .status-select:focus {
   outline: 2px solid #2f6dde;
 }
+
+.my-orders-table {
+  width: 950px;
+}
+
+.status-badge {
+  display: inline-block;
+  background-color: #eafafa;
+  color: #050f9f;
+  font-weight: bold;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .my-orders-table {
+    width: 100%;
+  }
+}

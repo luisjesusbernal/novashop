@@ -7,6 +7,7 @@ import Usuarios from "./pages/Usuarios";
 import Reportes from "./pages/Reportes";
 import ClienteHome from "./pages/ClienteHome";
 import Pedidos from "./pages/Pedidos";
+import MisPedidos from "./pages/MisPedidos";
 import "./styles.css";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
 
   const renderizarPagina = () => {
     if (esCliente) {
+      if (paginaActual === "mis-pedidos") return <MisPedidos />;
       return <ClienteHome usuario={usuario} />;
     }
 
@@ -77,7 +79,10 @@ function App() {
               {botonMenu("pedidos", "Pedidos")}
             </>
           ) : (
-            <button className="menu-button active">Catálogo</button>
+            <>
+              {botonMenu("inicio", "Catálogo")}
+              {botonMenu("mis-pedidos", "Mis pedidos")}
+            </>
           )}
         </nav>
       </aside>
@@ -101,9 +106,7 @@ function App() {
           </div>
         </header>
 
-        <section className="page-content">
-          {renderizarPagina()}
-        </section>
+        <section className="page-content">{renderizarPagina()}</section>
       </div>
     </div>
   );
