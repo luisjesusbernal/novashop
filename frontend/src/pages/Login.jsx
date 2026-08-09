@@ -1,7 +1,7 @@
 import { useState } from "react";
 import API_URL from "../services/api";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onShowRegister }) {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -19,12 +19,12 @@ function Login({ onLogin }) {
       const respuesta = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           correo,
-          password
-        })
+          password,
+        }),
       });
 
       const datos = await respuesta.json();
@@ -45,7 +45,11 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-page">
-      <div className="logo">NOVA<br />Shop</div>
+      <div className="logo">
+        NOVA
+        <br />
+        Shop
+      </div>
 
       <form className="login-card" onSubmit={iniciarSesion}>
         <input
@@ -64,7 +68,9 @@ function Login({ onLogin }) {
 
         <button type="submit">Iniciar sesión</button>
 
-        <p className="register-text">¿No tienes cuenta? Regístrate</p>
+        <button type="button" className="link-button" onClick={onShowRegister}>
+          ¿No tienes cuenta? Regístrate
+        </button>
 
         {mensaje && <p className="error-message">{mensaje}</p>}
       </form>

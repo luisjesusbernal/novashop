@@ -50,6 +50,60 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+app.post("/api/register", async (req, res) => {
+  const { nombre, correo, password, telefono, direccion } = req.body;
+
+  if (!nombre || !correo || !password) {
+    return res.status(400).json({
+      mensaje: "Nombre, correo y contraseña son obligatorios"
+    });
+  }
+
+  if (!correo.includes("@")) {
+    return res.status(400).json({
+      mensaje: "El correo electrónico no es válido"
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      mensaje: "La contraseña debe tener mínimo 6 caracteres"
+    });
+  }
+
+  try {
+    const [usuarioExistente] = await db.query(
+      "SELECT id_usuario FROM usuarios WHERE correo = ?",
+      [correo]
+    );
+
+    if (usuarioExistente.length > 0) {
+      return res.status(400).json({
+        mensaje: "El correo ya está registrado"
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await db.query(
+      `INSERT INTO usuarios 
+      (nombre, correo, password, telefono, direccion, id_rol) 
+      VALUES (?, ?, ?, ?, ?, ?)`,
+      [nombre, correo, passwordHash, telefono || "", direccion || "", 2]
+    );
+
+    res.status(201).json({
+      mensaje: "Usuario registrado correctamente"
+    });
+  } catch (error) {
+    console.error("Error al registrar usuario:", error);
+
+    res.status(500).json({
+      mensaje: "Error al registrar usuario"
+    });
+  }
+});
+
 // Login funcional con bcrypt
 app.post("/api/login", async (req, res) => {
   try {

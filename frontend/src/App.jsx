@@ -8,6 +8,7 @@ import Reportes from "./pages/Reportes";
 import ClienteHome from "./pages/ClienteHome";
 import Pedidos from "./pages/Pedidos";
 import MisPedidos from "./pages/MisPedidos";
+import Register from "./pages/Register";
 import "./styles.css";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   });
 
   const [paginaActual, setPaginaActual] = useState("inicio");
+  const [authPage, setAuthPage] = useState("login");
 
   const cerrarSesion = () => {
     localStorage.removeItem("usuario");
@@ -54,8 +56,17 @@ function App() {
   );
 
   if (!usuario) {
-    return <Login onLogin={setUsuario} />;
+  if (authPage === "register") {
+    return <Register onShowLogin={() => setAuthPage("login")} />;
   }
+
+  return (
+    <Login
+      onLogin={setUsuario}
+      onShowRegister={() => setAuthPage("register")}
+    />
+  );
+}
 
   return (
     <div className="admin-layout">
