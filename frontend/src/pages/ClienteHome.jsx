@@ -9,6 +9,7 @@ function ClienteHome({ usuario }) {
   });
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(true);
+  const [metodoPago, setMetodoPago] = useState("Pago contra entrega");
 
   useEffect(() => {
     let activo = true;
@@ -16,7 +17,7 @@ function ClienteHome({ usuario }) {
     async function cargarCatalogo() {
       try {
         const respuesta = await fetch(`${API_URL}/catalogo`, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
         });
 
         const datos = await respuesta.json();
@@ -49,7 +50,7 @@ function ClienteHome({ usuario }) {
     setMensaje("");
 
     const productoExistente = carrito.find(
-      (item) => item.id_producto === producto.id_producto
+      (item) => item.id_producto === producto.id_producto,
     );
 
     if (productoExistente) {
@@ -61,7 +62,7 @@ function ClienteHome({ usuario }) {
       const nuevoCarrito = carrito.map((item) =>
         item.id_producto === producto.id_producto
           ? { ...item, cantidad: item.cantidad + 1 }
-          : item
+          : item,
       );
 
       setCarrito(nuevoCarrito);
@@ -76,8 +77,8 @@ function ClienteHome({ usuario }) {
         nombre: producto.nombre,
         precio: producto.precio,
         stock: producto.stock,
-        cantidad: 1
-      }
+        cantidad: 1,
+      },
     ]);
 
     setMensaje("Producto agregado al carrito");
@@ -85,7 +86,7 @@ function ClienteHome({ usuario }) {
 
   const quitarDelCarrito = (idProducto) => {
     const nuevoCarrito = carrito.filter(
-      (item) => item.id_producto !== idProducto
+      (item) => item.id_producto !== idProducto,
     );
 
     setCarrito(nuevoCarrito);
@@ -102,7 +103,7 @@ function ClienteHome({ usuario }) {
 
         return {
           ...item,
-          cantidad: item.cantidad + 1
+          cantidad: item.cantidad + 1,
         };
       }
 
@@ -117,7 +118,7 @@ function ClienteHome({ usuario }) {
       if (item.id_producto === idProducto && item.cantidad > 1) {
         return {
           ...item,
-          cantidad: item.cantidad - 1
+          cantidad: item.cantidad - 1,
         };
       }
 
@@ -134,48 +135,49 @@ function ClienteHome({ usuario }) {
 
   const totalCarrito = carrito.reduce(
     (total, item) => total + Number(item.precio) * item.cantidad,
-    0
+    0,
   );
 
   const finalizarPedido = async () => {
-  if (carrito.length === 0) {
-    setMensaje("El carrito está vacío");
-    return;
-  }
-
-  try {
-    const productosPedido = carrito.map((item) => ({
-      id_producto: item.id_producto,
-      cantidad: item.cantidad
-    }));
-
-    const respuesta = await fetch(`${API_URL}/pedidos`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({
-        productos: productosPedido
-      })
-    });
-
-    const datos = await respuesta.json();
-
-    if (!respuesta.ok) {
-      setMensaje(datos.mensaje || "No se pudo crear el pedido");
+    if (carrito.length === 0) {
+      setMensaje("El carrito está vacío");
       return;
     }
 
-    setMensaje(
-      `Pedido creado correctamente. Folio: ${datos.id_pedido}. Total: $${Number(
-        datos.total
-      ).toFixed(2)}`
-    );
+    try {
+      const productosPedido = carrito.map((item) => ({
+        id_producto: item.id_producto,
+        cantidad: item.cantidad,
+      }));
 
-    setCarrito([]);
-  } catch (error) {
-    console.error("Error al finalizar pedido:", error);
-    setMensaje("No se pudo conectar con el servidor");
-  }
-};
+      const respuesta = await fetch(`${API_URL}/pedidos`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          productos: productosPedido,
+          metodo_pago: metodoPago,
+        }),
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        setMensaje(datos.mensaje || "No se pudo crear el pedido");
+        return;
+      }
+
+      setMensaje(
+        `Pedido creado correctamente. Folio: ${datos.id_pedido}. Total: $${Number(
+          datos.total,
+        ).toFixed(2)}. Método de pago: ${datos.metodo_pago}`,
+      );
+
+      setCarrito([]);
+    } catch (error) {
+      console.error("Error al finalizar pedido:", error);
+      setMensaje("No se pudo conectar con el servidor");
+    }
+  };
 
   const obtenerIniciales = (nombre) => {
     return nombre
@@ -279,13 +281,17 @@ function ClienteHome({ usuario }) {
                     </div>
 
                     <div className="cart-controls">
-                      <button onClick={() => disminuirCantidad(item.id_producto)}>
+                      <button
+                        onClick={() => disminuirCantidad(item.id_producto)}
+                      >
                         -
                       </button>
 
                       <span>{item.cantidad}</span>
 
-                      <button onClick={() => aumentarCantidad(item.id_producto)}>
+                      <button
+                        onClick={() => aumentarCantidad(item.id_producto)}
+                      >
                         +
                       </button>
                     </div>
@@ -308,6 +314,24 @@ function ClienteHome({ usuario }) {
               <div className="cart-total">
                 <span>Total</span>
                 <strong>${totalCarrito.toFixed(2)}</strong>
+              </div>
+              <div className="payment-section">
+                <label>Método de pago</label>
+
+                <select
+                  value={metodoPago}
+                  onChange={(e) => setMetodoPago(e.target.value)}
+                >
+                  <option value="Pago contra entrega">
+                    Pago contra entrega
+                  </option>
+                  <option value="Transferencia bancaria">
+                    Transferencia bancaria
+                  </option>
+                  <option value="Tarjeta simulada">Tarjeta simulada</option>
+                </select>
+
+                <p>El pago es simulado para fines académicos.</p>
               </div>
 
               <button onClick={finalizarPedido}>Finalizar pedido</button>

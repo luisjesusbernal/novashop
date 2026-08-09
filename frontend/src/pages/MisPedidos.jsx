@@ -13,7 +13,7 @@ function MisPedidos() {
     async function cargarPedidos() {
       try {
         const respuesta = await fetch(`${API_URL}/pedidos/mis-pedidos`, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
         });
 
         const datos = await respuesta.json();
@@ -50,7 +50,7 @@ function MisPedidos() {
 
     try {
       const respuesta = await fetch(`${API_URL}/pedidos/${idPedido}`, {
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
       });
 
       const datos = await respuesta.json();
@@ -96,6 +96,7 @@ function MisPedidos() {
               <th>Fecha</th>
               <th>Total</th>
               <th>Estado</th>
+              <th>Pago</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -109,6 +110,7 @@ function MisPedidos() {
                 <td>
                   <span className="status-badge">{pedido.estado}</span>
                 </td>
+                <td>{pedido.metodo_pago}</td>
                 <td>
                   <button
                     className="small-button"
@@ -122,7 +124,7 @@ function MisPedidos() {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan="5">Todavía no tienes pedidos registrados</td>
+                <td colSpan="6">Todavía no tienes pedidos registrados</td>
               </tr>
             )}
           </tbody>
@@ -149,6 +151,10 @@ function MisPedidos() {
             <p>
               <strong>Fecha:</strong>{" "}
               {new Date(detallePedido.pedido.fecha_pedido).toLocaleString()}
+            </p>
+            <p>
+              <strong>Método de pago:</strong>{" "}
+              {detallePedido.pedido.metodo_pago}
             </p>
           </div>
 

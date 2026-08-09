@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     fecha_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10,2) NOT NULL,
     estado VARCHAR(30) DEFAULT 'Pendiente',
+    metodo_pago VARCHAR(50) DEFAULT 'Pago contra entrega',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 

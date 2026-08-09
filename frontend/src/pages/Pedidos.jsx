@@ -150,6 +150,7 @@ function Pedidos() {
               <th>Fecha</th>
               <th>Total</th>
               <th>Estado</th>
+              <th>Pago</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -176,6 +177,7 @@ function Pedidos() {
                     <option value="Cancelado">Cancelado</option>
                   </select>
                 </td>
+                <td>{pedido.metodo_pago}</td>
                 <td>
                   <button
                     className="small-button"
@@ -189,7 +191,7 @@ function Pedidos() {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan="7">No hay pedidos registrados</td>
+                <td colSpan="8">No hay pedidos registrados</td>
               </tr>
             )}
           </tbody>
@@ -218,6 +220,10 @@ function Pedidos() {
             </p>
             <p>
               <strong>Estado:</strong> {detallePedido.pedido.estado}
+            </p>
+            <p>
+              <strong>Método de pago:</strong>{" "}
+              {detallePedido.pedido.metodo_pago}
             </p>
           </div>
 
