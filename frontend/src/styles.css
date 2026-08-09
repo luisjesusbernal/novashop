@@ -814,3 +814,16 @@ td {
     grid-template-columns: 1fr;
   }
 }
+.status-select {
+  height: 38px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 10px;
+  background-color: #f5f8ff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.status-select:focus {
+  outline: 2px solid #2f6dde;
+}

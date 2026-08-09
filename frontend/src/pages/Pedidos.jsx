@@ -13,7 +13,7 @@ function Pedidos() {
     async function cargarPedidos() {
       try {
         const respuesta = await fetch(`${API_URL}/pedidos`, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
         });
 
         const datos = await respuesta.json();
@@ -50,7 +50,7 @@ function Pedidos() {
 
     try {
       const respuesta = await fetch(`${API_URL}/pedidos/${idPedido}`, {
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
       });
 
       const datos = await respuesta.json();
@@ -70,6 +70,58 @@ function Pedidos() {
   const cerrarDetalle = () => {
     setDetallePedido(null);
   };
+
+  const cambiarEstado = async (idPedido, nuevoEstado) => {
+    setMensaje("");
+
+    try {
+      const respuesta = await fetch(`${API_URL}/pedidos/${idPedido}/estado`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          estado: nuevoEstado,
+        }),
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        setMensaje(datos.mensaje || "No se pudo actualizar el estado");
+        return;
+      }
+
+      const pedidosActualizados = pedidos.map((pedido) =>
+        pedido.id_pedido === idPedido
+          ? { ...pedido, estado: nuevoEstado }
+          : pedido,
+      );
+
+      setPedidos(pedidosActualizados);
+
+      if (detallePedido?.pedido?.id_pedido === idPedido) {
+        setDetallePedido({
+          ...detallePedido,
+          pedido: {
+            ...detallePedido.pedido,
+            estado: nuevoEstado,
+          },
+        });
+      }
+
+      setMensaje(datos.mensaje);
+    } catch (error) {
+      console.error("Error al actualizar estado:", error);
+      setMensaje("No se pudo conectar con el servidor");
+    }
+  };
+
+  if (cargando) {
+    return (
+      <main className="content">
+        <h1>Cargando pedidos...</h1>
+      </main>
+    );
+  }
 
   if (cargando) {
     return (
@@ -110,7 +162,20 @@ function Pedidos() {
                 <td>{pedido.correo}</td>
                 <td>{new Date(pedido.fecha_pedido).toLocaleString()}</td>
                 <td>${Number(pedido.total).toFixed(2)}</td>
-                <td>{pedido.estado}</td>
+                <td>
+                  <select
+                    className="status-select"
+                    value={pedido.estado}
+                    onChange={(e) =>
+                      cambiarEstado(pedido.id_pedido, e.target.value)
+                    }
+                  >
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Completado">Completado</option>
+                    <option value="Cancelado">Cancelado</option>
+                  </select>
+                </td>
                 <td>
                   <button
                     className="small-button"
