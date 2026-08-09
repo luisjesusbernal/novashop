@@ -39,7 +39,8 @@ function App() {
 
     if (paginaActual === "productos") return <Productos />;
     if (paginaActual === "categorias") return <Categorias />;
-    if (paginaActual === "usuarios") return <Usuarios usuarioActual={usuario} />;
+    if (paginaActual === "usuarios")
+      return <Usuarios usuarioActual={usuario} />;
     if (paginaActual === "reportes") return <Reportes />;
     if (paginaActual === "pedidos") return <Pedidos />;
 
@@ -56,17 +57,17 @@ function App() {
   );
 
   if (!usuario) {
-  if (authPage === "register") {
-    return <Register onShowLogin={() => setAuthPage("login")} />;
-  }
+    if (authPage === "register") {
+      return <Register onShowLogin={() => setAuthPage("login")} />;
+    }
 
-  return (
-    <Login
-      onLogin={setUsuario}
-      onShowRegister={() => setAuthPage("register")}
-    />
-  );
-}
+    return (
+      <Login
+        onLogin={setUsuario}
+        onShowRegister={() => setAuthPage("register")}
+      />
+    );
+  }
 
   return (
     <div className="admin-layout">
