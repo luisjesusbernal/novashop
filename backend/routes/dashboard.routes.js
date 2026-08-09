@@ -21,18 +21,32 @@ router.get("/resumen", async (req, res) => {
       "SELECT COUNT(*) AS total FROM productos WHERE stock <= 5"
     );
 
+    const [[pedidos]] = await db.query(
+      "SELECT COUNT(*) AS total FROM pedidos"
+    );
+
+    const [[ventas]] = await db.query(
+      "SELECT IFNULL(SUM(total), 0) AS total FROM pedidos"
+    );
+
+    const [[pedidosPendientes]] = await db.query(
+      "SELECT COUNT(*) AS total FROM pedidos WHERE estado = 'Pendiente'"
+    );
+
     res.json({
       usuarios: usuarios.total,
       productos: productos.total,
       categorias: categorias.total,
-      stock_bajo: stockBajo.total
+      stock_bajo: stockBajo.total,
+      pedidos: pedidos.total,
+      ventas_totales: ventas.total,
+      pedidos_pendientes: pedidosPendientes.total
     });
   } catch (error) {
-    console.error("Error al obtener resumen del dashboard:", error);
+    console.error("Error al obtener resumen:", error);
 
     res.status(500).json({
-      mensaje: "Error al obtener resumen del dashboard",
-      error: error.message
+      mensaje: "Error al obtener resumen del dashboard"
     });
   }
 });
