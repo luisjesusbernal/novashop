@@ -8,6 +8,11 @@ function validarPassword(password) {
   return regex.test(password);
 }
 
+function validarCorreo(correo) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(correo);
+}
+
 // Obtener todos los usuarios
 router.get("/", async (req, res) => {
   try {
@@ -88,9 +93,9 @@ router.post("/", async (req, res) => {
       });
     }
 
-    if (!correo.includes("@")) {
+    if (!validarCorreo(correo)) {
       return res.status(400).json({
-        mensaje: "El correo electrónico no es válido",
+        mensaje: "El correo electrónico no tiene un formato válido",
       });
     }
 
@@ -147,9 +152,9 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    if (!correo.includes("@")) {
+    if (!validarCorreo(correo)) {
       return res.status(400).json({
-        mensaje: "El correo electrónico no es válido",
+        mensaje: "El correo electrónico no tiene un formato válido",
       });
     }
 

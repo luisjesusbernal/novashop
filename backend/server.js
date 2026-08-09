@@ -30,6 +30,11 @@ function validarPassword(password) {
   return regex.test(password);
 }
 
+function validarCorreo(correo) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(correo);
+}
+
 // Ruta de prueba general
 app.get("/", (req, res) => {
   res.json({
@@ -65,11 +70,11 @@ app.post("/api/register", async (req, res) => {
     });
   }
 
-  if (!correo.includes("@")) {
-    return res.status(400).json({
-      mensaje: "El correo electrónico no es válido"
-    });
-  }
+ if (!validarCorreo(correo)) {
+  return res.status(400).json({
+    mensaje: "El correo electrónico no tiene un formato válido"
+  });
+}
 
   if (!validarPassword(password)) {
   return res.status(400).json({

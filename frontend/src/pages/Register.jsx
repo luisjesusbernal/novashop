@@ -18,8 +18,10 @@ function Register({ onShowLogin }) {
       return;
     }
 
-    if (!correo.includes("@")) {
-      setMensaje("El correo electrónico no es válido");
+    const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!correoValido.test(correo)) {
+      setMensaje("El correo electrónico no tiene un formato válido");
       return;
     }
 
