@@ -6,6 +6,7 @@ import Categorias from "./pages/Categorias";
 import Usuarios from "./pages/Usuarios";
 import Reportes from "./pages/Reportes";
 import ClienteHome from "./pages/ClienteHome";
+import Pedidos from "./pages/Pedidos";
 import "./styles.css";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
     if (paginaActual === "categorias") return <Categorias />;
     if (paginaActual === "usuarios") return <Usuarios />;
     if (paginaActual === "reportes") return <Reportes />;
+    if (paginaActual === "pedidos") return <Pedidos />;
 
     return <Dashboard />;
   };
@@ -72,6 +74,7 @@ function App() {
               {botonMenu("categorias", "Categorías")}
               {botonMenu("usuarios", "Usuarios")}
               {botonMenu("reportes", "Reportes")}
+              {botonMenu("pedidos", "Pedidos")}
             </>
           ) : (
             <button className="menu-button active">Catálogo</button>
