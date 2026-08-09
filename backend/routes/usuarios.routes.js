@@ -3,6 +3,11 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const db = require("../db");
 
+function validarPassword(password) {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  return regex.test(password);
+}
+
 // Obtener todos los usuarios
 router.get("/", async (req, res) => {
   try {
@@ -89,9 +94,10 @@ router.post("/", async (req, res) => {
       });
     }
 
-    if (password.length < 6) {
+    if (!validarPassword(password)) {
       return res.status(400).json({
-        mensaje: "La contraseña debe tener mínimo 6 caracteres",
+        mensaje:
+          "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
       });
     }
 
@@ -205,9 +211,16 @@ router.put("/:id/password", async (req, res) => {
       });
     }
 
-    if (password.length < 6) {
+    if (!password) {
       return res.status(400).json({
-        mensaje: "La contraseña debe tener mínimo 6 caracteres",
+        mensaje: "La contraseña es obligatoria",
+      });
+    }
+
+    if (!validarPassword(password)) {
+      return res.status(400).json({
+        mensaje:
+          "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
       });
     }
 

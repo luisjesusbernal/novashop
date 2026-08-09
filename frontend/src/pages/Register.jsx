@@ -23,8 +23,12 @@ function Register({ onShowLogin }) {
       return;
     }
 
-    if (password.length < 6) {
-      setMensaje("La contraseña debe tener mínimo 6 caracteres");
+    const passwordSegura = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    if (!passwordSegura.test(password)) {
+      setMensaje(
+        "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
+      );
       return;
     }
 
@@ -32,15 +36,15 @@ function Register({ onShowLogin }) {
       const respuesta = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nombre,
           correo,
           password,
           telefono,
-          direccion
-        })
+          direccion,
+        }),
       });
 
       const datos = await respuesta.json();
@@ -111,11 +115,7 @@ function Register({ onShowLogin }) {
 
         <button type="submit">Registrarse</button>
 
-        <button
-          type="button"
-          className="link-button"
-          onClick={onShowLogin}
-        >
+        <button type="button" className="link-button" onClick={onShowLogin}>
           ¿Ya tienes cuenta? Inicia sesión
         </button>
 

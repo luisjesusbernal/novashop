@@ -24,6 +24,12 @@ app.use("/api/dashboard", verificarToken, soloAdmin, dashboardRoutes);
 app.use("/api/catalogo", verificarToken, catalogoRoutes);
 app.use("/api/pedidos", verificarToken, pedidosRoutes);
 
+
+function validarPassword(password) {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  return regex.test(password);
+}
+
 // Ruta de prueba general
 app.get("/", (req, res) => {
   res.json({
@@ -65,11 +71,12 @@ app.post("/api/register", async (req, res) => {
     });
   }
 
-  if (password.length < 6) {
-    return res.status(400).json({
-      mensaje: "La contraseña debe tener mínimo 6 caracteres"
-    });
-  }
+  if (!validarPassword(password)) {
+  return res.status(400).json({
+    mensaje:
+      "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial"
+  });
+}
 
   try {
     const [usuarioExistente] = await db.query(

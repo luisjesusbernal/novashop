@@ -80,8 +80,12 @@ function Usuarios({ usuarioActual }) {
       return;
     }
 
-    if (!idEditando && password.length < 6) {
-      setMensaje("La contraseña debe tener mínimo 6 caracteres");
+    const passwordSegura = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    if (!idEditando && !passwordSegura.test(password)) {
+      setMensaje(
+        "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
+      );
       return;
     }
 
@@ -179,8 +183,12 @@ function Usuarios({ usuarioActual }) {
       return;
     }
 
-    if (nuevaPassword.length < 6) {
-      setMensaje("La contraseña debe tener mínimo 6 caracteres");
+    const passwordSegura = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    if (!passwordSegura.test(nuevaPassword)) {
+      setMensaje(
+        "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
+      );
       return;
     }
 
