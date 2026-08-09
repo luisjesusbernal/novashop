@@ -137,18 +137,45 @@ function ClienteHome({ usuario }) {
     0
   );
 
-  const finalizarPedido = () => {
-    if (carrito.length === 0) {
-      setMensaje("El carrito está vacío");
+  const finalizarPedido = async () => {
+  if (carrito.length === 0) {
+    setMensaje("El carrito está vacío");
+    return;
+  }
+
+  try {
+    const productosPedido = carrito.map((item) => ({
+      id_producto: item.id_producto,
+      cantidad: item.cantidad
+    }));
+
+    const respuesta = await fetch(`${API_URL}/pedidos`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        productos: productosPedido
+      })
+    });
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      setMensaje(datos.mensaje || "No se pudo crear el pedido");
       return;
     }
 
     setMensaje(
-      `Pedido simulado correctamente para ${usuario.nombre}. Total: $${totalCarrito.toFixed(2)}`
+      `Pedido creado correctamente. Folio: ${datos.id_pedido}. Total: $${Number(
+        datos.total
+      ).toFixed(2)}`
     );
 
     setCarrito([]);
-  };
+  } catch (error) {
+    console.error("Error al finalizar pedido:", error);
+    setMensaje("No se pudo conectar con el servidor");
+  }
+};
 
   const obtenerIniciales = (nombre) => {
     return nombre
