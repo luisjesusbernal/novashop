@@ -497,3 +497,7 @@ http://localhost:5173
 ## Autor
 
 Luis Jesus Bernal
+
+## Notas finales
+
+Este proyecto fue desarrollado con fines académicos, integrando frontend, backend, base de datos, seguridad básica, API REST y control de versiones.
