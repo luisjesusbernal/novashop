@@ -178,6 +178,54 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Actualizar estado de un pedido, solo administrador
+router.put("/:id/estado", async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body || {};
+
+  const estadosPermitidos = ["Pendiente", "En proceso", "Completado", "Cancelado"];
+
+  if (req.usuario.id_rol !== 1) {
+    return res.status(403).json({
+      mensaje: "Acceso denegado. Se requiere rol de administrador."
+    });
+  }
+
+  if (!estado || !estadosPermitidos.includes(estado)) {
+    return res.status(400).json({
+      mensaje: "Estado no válido"
+    });
+  }
+
+  try {
+    const [pedidoEncontrado] = await db.query(
+      "SELECT id_pedido FROM pedidos WHERE id_pedido = ?",
+      [id]
+    );
+
+    if (pedidoEncontrado.length === 0) {
+      return res.status(404).json({
+        mensaje: "Pedido no encontrado"
+      });
+    }
+
+    await db.query(
+      "UPDATE pedidos SET estado = ? WHERE id_pedido = ?",
+      [estado, id]
+    );
+
+    res.json({
+      mensaje: "Estado del pedido actualizado correctamente"
+    });
+  } catch (error) {
+    console.error("Error al actualizar estado del pedido:", error);
+
+    res.status(500).json({
+      mensaje: "Error al actualizar el estado del pedido"
+    });
+  }
+});
+
 // Obtener detalle de un pedido
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
