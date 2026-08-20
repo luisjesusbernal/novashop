@@ -17,11 +17,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/catalogo", catalogoRoutes);
 app.use("/api/categorias", verificarToken, soloAdmin, categoriasRoutes);
 app.use("/api/productos", verificarToken, soloAdmin, productosRoutes);
 app.use("/api/usuarios", verificarToken, soloAdmin, usuariosRoutes);
 app.use("/api/dashboard", verificarToken, soloAdmin, dashboardRoutes);
-app.use("/api/catalogo", verificarToken, catalogoRoutes);
 app.use("/api/pedidos", verificarToken, pedidosRoutes);
 
 

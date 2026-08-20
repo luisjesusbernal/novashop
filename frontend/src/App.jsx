@@ -9,6 +9,7 @@ import ClienteHome from "./pages/ClienteHome";
 import Pedidos from "./pages/Pedidos";
 import MisPedidos from "./pages/MisPedidos";
 import Register from "./pages/Register";
+import PublicHome from "./pages/PublicHome";
 import "./styles.css";
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
   });
 
   const [paginaActual, setPaginaActual] = useState("inicio");
-  const [authPage, setAuthPage] = useState("login");
+  const [authPage, setAuthPage] = useState("public");
 
   const cerrarSesion = () => {
     localStorage.removeItem("usuario");
@@ -26,6 +27,7 @@ function App() {
     localStorage.removeItem("carrito");
     setUsuario(null);
     setPaginaActual("inicio");
+    setAuthPage("public");
   };
 
   const esAdmin = usuario?.id_rol === 1;
@@ -57,10 +59,7 @@ function App() {
   );
 
   if (!usuario) {
-    if (authPage === "register") {
-      return <Register onShowLogin={() => setAuthPage("login")} />;
-    }
-
+  if (authPage === "login") {
     return (
       <Login
         onLogin={setUsuario}
@@ -68,6 +67,18 @@ function App() {
       />
     );
   }
+
+  if (authPage === "register") {
+    return <Register onShowLogin={() => setAuthPage("login")} />;
+  }
+
+  return (
+    <PublicHome
+      irLogin={() => setAuthPage("login")}
+      irRegistro={() => setAuthPage("register")}
+    />
+  );
+}
 
   return (
     <div className="admin-layout">
