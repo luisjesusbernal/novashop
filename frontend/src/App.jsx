@@ -87,6 +87,37 @@ function App() {
       case "/admin":
         setPaginaActual("inicio");
         setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/admin/productos":
+        setPaginaActual("productos");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/admin/categorias":
+        setPaginaActual("categorias");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/admin/usuarios":
+        setPaginaActual("usuarios");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/admin/reportes":
+        setPaginaActual("reportes");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/admin/pedidos":
+        setPaginaActual("pedidos");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
         break;
 
       default:
@@ -191,6 +222,22 @@ const manejarLogin = (usuarioLogin) => {
   }
 };
 
+const abrirAdminPagina = (clave) => {
+  const rutasAdmin = {
+    inicio: "/admin",
+    productos: "/admin/productos",
+    categorias: "/admin/categorias",
+    usuarios: "/admin/usuarios",
+    reportes: "/admin/reportes",
+    pedidos: "/admin/pedidos",
+  };
+
+  setPaginaActual(clave);
+  setAuthPage("public");
+  setProductoSeleccionado(null);
+  navigate(rutasAdmin[clave] || "/admin");
+};
+
 
   const renderizarPagina = () => {
     if (esCliente) {
@@ -211,7 +258,7 @@ const manejarLogin = (usuarioLogin) => {
   const botonMenu = (clave, texto) => (
     <button
       className={`menu-button ${paginaActual === clave ? "active" : ""}`}
-      onClick={() => setPaginaActual(clave)}
+      onClick={() => abrirAdminPagina(clave)}
     >
       {texto}
     </button>
