@@ -209,7 +209,7 @@ function PublicProductDetail({
                     -
                   </button>
 
-                  <span className="fs-5 px-3">{cantidad}</span>
+                  <span className="fs-5 px-3">Cantidad a agregar: {cantidad}</span>
 
                   <button
                     className="btn btn-outline-secondary"
