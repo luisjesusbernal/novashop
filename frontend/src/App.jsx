@@ -205,6 +205,7 @@ const abrirConsultaPedido = () => {
             setCarrito={setCarrito}
             irInicio={volverATienda}
             irLogin={() => setAuthPage("login")}
+            irConsultarPedido={abrirConsultaPedido}
           />
         </PublicLayout>
       );
@@ -284,6 +285,7 @@ const abrirConsultaPedido = () => {
             setCarrito={setCarrito}
             irInicio={() => setPaginaActual("inicio")}
             irLogin={() => setAuthPage("login")}
+            irConsultarPedido={abrirConsultaPedido}
           />
         </PublicLayout>
       );

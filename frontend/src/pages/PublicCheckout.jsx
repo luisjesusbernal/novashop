@@ -1,7 +1,14 @@
 import { useState } from "react";
 import API_URL from "../services/api";
 
-function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
+function PublicCheckout({
+  carrito,
+  usuario,
+  setCarrito,
+  irInicio,
+  irLogin,
+  irConsultarPedido,
+}) {
 
   const [datos, setDatos] = useState({
     nombre: usuario?.nombre || "",
@@ -22,6 +29,7 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
   const [pedidoCreado, setPedidoCreado] = useState(null);
+  const [productosConfirmados, setProductosConfirmados] = useState([]);
 
   const actualizarDato = (e) => {
   const { name, value, type, checked } = e.target;
@@ -123,8 +131,10 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
         throw new Error(data.mensaje || "Error al crear el pedido");
       }
 
+      setProductosConfirmados(carrito);
       setPedidoCreado(data);
       setCarrito([]);
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -142,6 +152,127 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
           <button className="btn btn-primary" onClick={irInicio}>
             Volver al catálogo
           </button>
+        </div>
+      </section>
+    );
+  }
+
+  if (pedidoCreado) {
+    return (
+      <section className="row justify-content-center">
+        <div className="col-lg-9">
+          <div className="card shadow-sm border-success">
+            <div className="card-body p-4 p-md-5">
+              <div className="text-center mb-4">
+                <span className="badge bg-success fs-6 mb-3">
+                  Pedido confirmado
+                </span>
+
+                <h2 className="fw-bold">¡Gracias por tu compra!</h2>
+
+                <p className="text-muted mb-0">
+                  Tu pedido fue registrado correctamente en TyrForge.
+                </p>
+              </div>
+
+              <div className="alert alert-info">
+                <h5 className="fw-bold mb-2">Guarda esta información</h5>
+
+                <p className="mb-1">
+                  Número de pedido: <strong>#{pedidoCreado.id_pedido}</strong>
+                </p>
+
+                <p className="mb-1">
+                  Correo usado: <strong>{datos.correo}</strong>
+                </p>
+
+                <p className="mb-0">
+                  Con estos datos podrás consultar el estado de tu pedido más
+                  adelante.
+                </p>
+              </div>
+
+              <div className="row mt-4">
+                <div className="col-md-6 mb-3">
+                  <div className="border rounded p-3 h-100">
+                    <h5 className="fw-bold">Resumen del pedido</h5>
+
+                    <p className="mb-1">
+                      <strong>Tipo de cliente:</strong>{" "}
+                      {pedidoCreado.tipo_cliente}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Método de pago:</strong>{" "}
+                      {pedidoCreado.metodo_pago}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Método de envío:</strong>{" "}
+                      {pedidoCreado.metodo_envio}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Subtotal:</strong> $
+                      {Number(pedidoCreado.subtotal || 0).toFixed(2)}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Envío:</strong> $
+                      {Number(pedidoCreado.costo_envio || 0).toFixed(2)}
+                    </p>
+
+                    <p className="fs-5 mb-0">
+                      <strong>Total:</strong> $
+                      {Number(pedidoCreado.total || 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <div className="border rounded p-3 h-100">
+                    <h5 className="fw-bold">Productos comprados</h5>
+
+                    {productosConfirmados.map((item) => (
+                      <div
+                        className="d-flex justify-content-between border-bottom py-2"
+                        key={item.id_producto}
+                      >
+                        <span>
+                          {item.nombre} x {item.cantidad}
+                        </span>
+
+                        <strong>
+                          ${(Number(item.precio) * item.cantidad).toFixed(2)}
+                        </strong>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="d-flex flex-column flex-md-row gap-3 mt-4">
+                <button
+                  className="btn btn-primary flex-fill"
+                  onClick={irInicio}
+                >
+                  Volver a la tienda
+                </button>
+
+                <button
+                  className="btn btn-outline-primary flex-fill"
+                  onClick={irConsultarPedido}
+                >
+                  Consultar mi pedido
+                </button>
+              </div>
+
+              <p className="text-muted text-center mt-4 mb-0">
+                Cuando el estado del pedido cambie, podrás verlo usando tu folio
+                y correo.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -487,34 +618,10 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
 
               {error && <div className="alert alert-danger mt-3">{error}</div>}
 
-              {pedidoCreado && (
-                <div className="alert alert-success mt-3">
-                  <h5 className="fw-bold">Pedido creado correctamente</h5>
-                  <p className="mb-1">
-                    Número de pedido: {pedidoCreado.id_pedido}
-                  </p>
-                  <p className="mb-1">
-                    Total: ${Number(pedidoCreado.total).toFixed(2)}
-                  </p>
-                  <p className="mb-0">Cliente: {pedidoCreado.tipo_cliente}</p>
-
-                  <p className="mt-2 mb-0">
-                    Guarda tu número de pedido y el correo usado en la compra
-                    para consultar el estado más adelante.
-                  </p>
-
-                  <button
-                    className="btn btn-primary w-100 mt-3"
-                    onClick={irInicio}
-                  >
-                    Volver a la tienda
-                  </button>
-                </div>
-              )}
               <button
                 className="btn btn-success w-100 mt-4"
                 onClick={finalizarCheckoutReal}
-                disabled={cargando || pedidoCreado}
+                disabled={cargando}
               >
                 {cargando ? "Procesando pedido..." : "Confirmar compra"}
               </button>
