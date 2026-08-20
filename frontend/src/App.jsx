@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Productos from "./pages/Productos";
@@ -18,6 +19,10 @@ import PublicProductDetail from "./pages/PublicProductDetail";
 import "./styles.css";
 
 function App() {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [usuario, setUsuario] = useState(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
     return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
@@ -34,6 +39,69 @@ function App() {
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
   useEffect(() => {
+  const ruta = location.pathname;
+
+  const sincronizarRuta = () => {
+    switch (ruta) {
+      case "/":
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        break;
+
+      case "/login":
+        setPaginaActual("inicio");
+        setAuthPage("login");
+        break;
+
+      case "/registro":
+        setPaginaActual("inicio");
+        setAuthPage("register");
+        break;
+
+      case "/carrito":
+        setPaginaActual("carrito");
+        setAuthPage("public");
+        break;
+
+      case "/checkout":
+        setPaginaActual("checkout");
+        setAuthPage("public");
+        break;
+
+      case "/consultar-pedido":
+        setPaginaActual("consulta-pedido");
+        setAuthPage("public");
+        break;
+
+      case "/producto":
+        setPaginaActual("producto");
+        setAuthPage("public");
+        break;
+
+      case "/mis-pedidos":
+        setPaginaActual("mis-pedidos");
+        setAuthPage("public");
+        break;
+
+      case "/admin":
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        break;
+
+      default:
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        break;
+    }
+  };
+
+  const id = setTimeout(sincronizarRuta, 0);
+
+  return () => clearTimeout(id);
+}, [location.pathname]);
+
+  useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
@@ -43,6 +111,8 @@ function App() {
   setUsuario(null);
   setPaginaActual("inicio");
   setAuthPage("public");
+  setProductoSeleccionado(null);
+  navigate("/", { replace: true });
 };
 
   const esAdmin = usuario?.id_rol === 1;
@@ -62,28 +132,65 @@ function App() {
   setPaginaActual("inicio");
   setAuthPage("public");
   setProductoSeleccionado(null);
+  navigate("/");
+};
+
+const abrirLogin = () => {
+  setPaginaActual("inicio");
+  setAuthPage("login");
+  navigate("/login");
+};
+
+const abrirRegistro = () => {
+  setPaginaActual("inicio");
+  setAuthPage("register");
+  navigate("/registro");
 };
 
   const abrirCarrito = () => {
   setPaginaActual("carrito");
   setAuthPage("public");
+  navigate("/carrito");
 };
 
 const abrirCheckout = () => {
   setPaginaActual("checkout");
   setAuthPage("public");
+  navigate("/checkout");
 };
 
 const abrirConsultaPedido = () => {
   setPaginaActual("consulta-pedido");
   setAuthPage("public");
+  navigate("/consultar-pedido");
+};
+
+const abrirMisPedidos = () => {
+  setPaginaActual("mis-pedidos");
+  setAuthPage("public");
+  navigate("/mis-pedidos");
 };
 
 const abrirProducto = (producto) => {
   setProductoSeleccionado(producto);
   setPaginaActual("producto");
   setAuthPage("public");
+  navigate("/producto");
 };
+
+const manejarLogin = (usuarioLogin) => {
+  setUsuario(usuarioLogin);
+  setAuthPage("public");
+
+  if (usuarioLogin.id_rol === 1) {
+    setPaginaActual("inicio");
+    navigate("/admin", { replace: true });
+  } else {
+    setPaginaActual("inicio");
+    navigate("/", { replace: true });
+  }
+};
+
 
   const renderizarPagina = () => {
     if (esCliente) {
@@ -114,9 +221,9 @@ const abrirProducto = (producto) => {
     if (authPage === "login") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
@@ -129,8 +236,8 @@ const abrirProducto = (producto) => {
                   <h2 className="text-center mb-4">Iniciar sesión</h2>
 
                   <Login
-                    onLogin={setUsuario}
-                    onShowRegister={() => setAuthPage("register")}
+                    onLogin={manejarLogin}
+                    onShowRegister={abrirRegistro}
                   />
 
                   <div className="text-center mt-3">
@@ -149,9 +256,9 @@ const abrirProducto = (producto) => {
     if (authPage === "register") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
@@ -163,7 +270,7 @@ const abrirProducto = (producto) => {
                 <div className="card-body p-4">
                   <h2 className="text-center mb-4">Crear cuenta</h2>
 
-                  <Register onShowLogin={() => setAuthPage("login")} />
+                  <Register onShowLogin={abrirLogin} />
 
                   <div className="text-center mt-3">
                     <button className="btn btn-link" onClick={volverATienda}>
@@ -181,9 +288,9 @@ const abrirProducto = (producto) => {
     if (paginaActual === "carrito") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
@@ -192,7 +299,7 @@ const abrirProducto = (producto) => {
           <PublicCart
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={volverATienda}
+            irInicio={() => setPaginaActual("inicio")}
             irCheckout={abrirCheckout}
           />
         </PublicLayout>
@@ -202,10 +309,11 @@ const abrirProducto = (producto) => {
     if (paginaActual === "checkout") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
+          irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
           totalCarrito={totalCarrito}
         >
@@ -213,8 +321,8 @@ const abrirProducto = (producto) => {
             carrito={carrito}
             usuario={usuario}
             setCarrito={setCarrito}
-            irInicio={volverATienda}
-            irLogin={() => setAuthPage("login")}
+            irInicio={() => setPaginaActual("inicio")}
+            irLogin={abrirLogin}
             irConsultarPedido={abrirConsultaPedido}
           />
         </PublicLayout>
@@ -224,9 +332,9 @@ const abrirProducto = (producto) => {
     if (paginaActual === "consulta-pedido") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
@@ -237,12 +345,12 @@ const abrirProducto = (producto) => {
       );
     }
 
-    if (paginaActual === "producto" && productoSeleccionado) {
+    if (paginaActual === "producto") {
       return (
         <PublicLayout
-          irInicio={volverATienda}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           cantidadCarrito={cantidadCarrito}
@@ -252,7 +360,7 @@ const abrirProducto = (producto) => {
             producto={productoSeleccionado}
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={volverATienda}
+            irInicio={() => setPaginaActual("inicio")}
             irCarrito={abrirCarrito}
           />
         </PublicLayout>
@@ -261,9 +369,9 @@ const abrirProducto = (producto) => {
 
     return (
       <PublicHome
-        irInicio={volverATienda}
-        irLogin={() => setAuthPage("login")}
-        irRegistro={() => setAuthPage("register")}
+        irInicio={() => setPaginaActual("inicio")}
+        irLogin={abrirLogin}
+        irRegistro={abrirRegistro}
         irCarrito={abrirCarrito}
         irConsultarPedido={abrirConsultaPedido}
         irProducto={abrirProducto}
@@ -278,9 +386,9 @@ const abrirProducto = (producto) => {
       return (
         <PublicLayout
           irInicio={() => setPaginaActual("inicio")}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
+          irMisPedidos={abrirMisPedidos}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           usuario={usuario}
@@ -302,9 +410,9 @@ const abrirProducto = (producto) => {
       return (
         <PublicLayout
           irInicio={() => setPaginaActual("inicio")}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
+          irMisPedidos={abrirMisPedidos}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           usuario={usuario}
@@ -317,7 +425,7 @@ const abrirProducto = (producto) => {
             usuario={usuario}
             setCarrito={setCarrito}
             irInicio={() => setPaginaActual("inicio")}
-            irLogin={() => setAuthPage("login")}
+            irLogin={abrirLogin}
             irConsultarPedido={abrirConsultaPedido}
           />
         </PublicLayout>
@@ -328,9 +436,9 @@ const abrirProducto = (producto) => {
       return (
         <PublicLayout
           irInicio={() => setPaginaActual("inicio")}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
+          irMisPedidos={abrirMisPedidos}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           usuario={usuario}
@@ -347,9 +455,9 @@ const abrirProducto = (producto) => {
       return (
         <PublicLayout
           irInicio={() => setPaginaActual("inicio")}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
+          irMisPedidos={abrirMisPedidos}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           usuario={usuario}
@@ -362,16 +470,16 @@ const abrirProducto = (producto) => {
       );
     }
 
-    if (paginaActual === "producto" && productoSeleccionado) {
+    if (paginaActual === "producto") {
       return (
         <PublicLayout
           irInicio={() => {
             setPaginaActual("inicio");
             setProductoSeleccionado(null);
           }}
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irLogin={abrirLogin}
+          irRegistro={abrirRegistro}
+          irMisPedidos={abrirMisPedidos}
           irCarrito={abrirCarrito}
           irConsultarPedido={abrirConsultaPedido}
           usuario={usuario}
@@ -395,9 +503,9 @@ const abrirProducto = (producto) => {
     return (
       <PublicHome
         irInicio={() => setPaginaActual("inicio")}
-        irLogin={() => setAuthPage("login")}
-        irRegistro={() => setAuthPage("register")}
-        irMisPedidos={() => setPaginaActual("mis-pedidos")}
+        irLogin={abrirLogin}
+        irRegistro={abrirRegistro}
+        irMisPedidos={abrirMisPedidos}
         irCarrito={abrirCarrito}
         irConsultarPedido={abrirConsultaPedido}
         irProducto={abrirProducto}
