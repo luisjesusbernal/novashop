@@ -39,12 +39,24 @@ CREATE TABLE IF NOT EXISTS productos (
 
 CREATE TABLE IF NOT EXISTS pedidos (
     id_pedido INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL,
+    id_usuario INT NULL,
+    cliente_nombre VARCHAR(100) NULL,
+    cliente_correo VARCHAR(150) NULL,
+    cliente_telefono VARCHAR(30) NULL,
+    direccion_entrega VARCHAR(255) NULL,
+    direccion_extra VARCHAR(255) NULL,
+    codigo_postal VARCHAR(15) NULL,
+    ciudad VARCHAR(100) NULL,
+    estado_entrega VARCHAR(100) NULL,
+    pais VARCHAR(100) DEFAULT 'México',
     fecha_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10,2) NOT NULL,
     estado VARCHAR(30) DEFAULT 'Pendiente',
     metodo_pago VARCHAR(50) DEFAULT 'Pago contra entrega',
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+    metodo_envio VARCHAR(50) DEFAULT 'Envío estándar',
+    costo_envio DECIMAL(10,2) DEFAULT 0,
+    subtotal DECIMAL(10,2) DEFAULT 0,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS detalle_pedidos (
