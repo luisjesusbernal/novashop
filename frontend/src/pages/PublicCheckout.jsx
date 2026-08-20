@@ -132,7 +132,7 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
     }
   };
 
-  if (carrito.length === 0) {
+  if (carrito.length === 0 && !pedidoCreado) {
     return (
       <section className="card shadow-sm">
         <div className="card-body text-center p-5">
@@ -497,6 +497,11 @@ function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
                     Total: ${Number(pedidoCreado.total).toFixed(2)}
                   </p>
                   <p className="mb-0">Cliente: {pedidoCreado.tipo_cliente}</p>
+
+                  <p className="mt-2 mb-0">
+                    Guarda tu número de pedido y el correo usado en la compra
+                    para consultar el estado más adelante.
+                  </p>
 
                   <button
                     className="btn btn-primary w-100 mt-3"

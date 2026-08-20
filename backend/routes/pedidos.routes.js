@@ -465,6 +465,94 @@ router.put(
   }
 );
 
+// Consultar pedido público por folio y correo
+router.get("/consulta/:id", async (req, res) => {
+  const { id } = req.params;
+  const { correo } = req.query;
+
+  if (!id || isNaN(Number(id))) {
+    return res.status(400).json({
+      mensaje: "Folio de pedido no válido",
+    });
+  }
+
+  if (!correo) {
+    return res.status(400).json({
+      mensaje: "El correo electrónico es obligatorio",
+    });
+  }
+
+  try {
+    const [pedido] = await db.query(
+      `
+      SELECT 
+        p.id_pedido,
+        p.id_usuario,
+        p.cliente_nombre,
+        p.cliente_correo,
+        p.cliente_telefono,
+        p.direccion_entrega,
+        p.direccion_extra,
+        p.codigo_postal,
+        p.ciudad,
+        p.estado_entrega,
+        p.pais,
+        p.fecha_pedido,
+        p.subtotal,
+        p.costo_envio,
+        p.total,
+        p.estado,
+        p.metodo_pago,
+        p.metodo_envio,
+        COALESCE(u.nombre, p.cliente_nombre) AS cliente,
+        COALESCE(u.correo, p.cliente_correo) AS correo,
+        CASE 
+          WHEN p.id_usuario IS NULL THEN 'Invitado'
+          ELSE 'Registrado'
+        END AS tipo_cliente
+      FROM pedidos p
+      LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
+      WHERE p.id_pedido = ?
+        AND LOWER(COALESCE(p.cliente_correo, u.correo)) = LOWER(?)
+      `,
+      [id, correo]
+    );
+
+    if (pedido.length === 0) {
+      return res.status(404).json({
+        mensaje: "No se encontró un pedido con ese folio y correo",
+      });
+    }
+
+    const [detalles] = await db.query(
+      `
+      SELECT 
+        dp.id_detalle,
+        dp.id_producto,
+        pr.nombre AS producto,
+        dp.cantidad,
+        dp.precio_unitario,
+        dp.subtotal
+      FROM detalle_pedidos dp
+      INNER JOIN productos pr ON dp.id_producto = pr.id_producto
+      WHERE dp.id_pedido = ?
+      `,
+      [id]
+    );
+
+    return res.json({
+      pedido: pedido[0],
+      detalles,
+    });
+  } catch (error) {
+    console.error("Error al consultar pedido público:", error);
+
+    return res.status(500).json({
+      mensaje: "Error al consultar el pedido",
+    });
+  }
+});
+
 // Obtener detalle de un pedido
 router.get("/:id", requerirAutenticacion, async (req, res) => {
   const { id } = req.params;

@@ -5,6 +5,7 @@ function PublicLayout({
   irRegistro,
   irMisPedidos,
   irCarrito,
+  irConsultarPedido,
   usuario,
   cerrarSesion,
   busqueda = "",
@@ -98,6 +99,13 @@ function PublicLayout({
                 Inicio
               </button>
             </li>
+
+            <button
+              className="nav-link text-white btn btn-link"
+              onClick={irConsultarPedido}
+            >
+              Consultar pedido
+            </button>
 
             <li className="nav-item">
               <button className="nav-link text-white btn btn-link">

@@ -8,6 +8,7 @@ function PublicHome({
   irRegistro,
   irMisPedidos,
   irCarrito,
+  irConsultarPedido,
   usuario,
   cerrarSesion,
   carrito,
@@ -96,6 +97,7 @@ function PublicHome({
       irRegistro={irRegistro}
       irMisPedidos={irMisPedidos}
       irCarrito={irCarrito}
+      irConsultarPedido={irConsultarPedido}
       usuario={usuario}
       cerrarSesion={cerrarSesion}
       busqueda={busqueda}
