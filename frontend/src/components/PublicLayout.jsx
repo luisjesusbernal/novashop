@@ -1,9 +1,10 @@
 function PublicLayout({
   children,
+  irInicio,
   irLogin,
   irRegistro,
-  busqueda,
-  setBusqueda,
+  busqueda = "",
+  setBusqueda = () => {},
   cantidadCarrito = 0,
   totalCarrito = 0,
 }) {
@@ -43,12 +44,16 @@ function PublicLayout({
               Iniciar sesión
             </button>
 
-            <button className="btn btn-outline-primary me-2" onClick={irRegistro}>
+            <button
+              className="btn btn-outline-primary me-2"
+              onClick={irRegistro}
+            >
               Crear cuenta
             </button>
 
             <button className="btn btn-primary">
-              Carrito: {cantidadCarrito} producto(s) - ${totalCarrito.toFixed(2)}
+              Carrito: {cantidadCarrito} producto(s) - $
+              {totalCarrito.toFixed(2)}
             </button>
           </div>
         </div>
@@ -58,7 +63,10 @@ function PublicLayout({
         <div className="container">
           <ul className="nav">
             <li className="nav-item">
-              <button className="nav-link text-white btn btn-link">
+              <button
+                className="nav-link text-white btn btn-link"
+                onClick={irInicio}
+              >
                 Inicio
               </button>
             </li>

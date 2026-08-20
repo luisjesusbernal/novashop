@@ -10,6 +10,7 @@ import Pedidos from "./pages/Pedidos";
 import MisPedidos from "./pages/MisPedidos";
 import Register from "./pages/Register";
 import PublicHome from "./pages/PublicHome";
+import PublicLayout from "./components/PublicLayout";
 import "./styles.css";
 
 function App() {
@@ -59,26 +60,78 @@ function App() {
   );
 
   if (!usuario) {
-  if (authPage === "login") {
+    if (authPage === "login") {
+      return (
+        <PublicLayout
+          irInicio={() => setAuthPage("public")}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+        >
+          <section className="row justify-content-center">
+            <div className="col-md-6 col-lg-5">
+              <div className="card shadow-sm">
+                <div className="card-body p-4">
+                  <h2 className="text-center mb-4">Iniciar sesión</h2>
+
+                  <Login
+                    onLogin={setUsuario}
+                    onShowRegister={() => setAuthPage("register")}
+                  />
+
+                  <div className="text-center mt-3">
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setAuthPage("public")}
+                    >
+                      Volver a la tienda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </PublicLayout>
+      );
+    }
+
+    if (authPage === "register") {
+      return (
+        <PublicLayout
+          irInicio={() => setAuthPage("public")}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+        >
+          <section className="row justify-content-center">
+            <div className="col-md-8 col-lg-6">
+              <div className="card shadow-sm">
+                <div className="card-body p-4">
+                  <h2 className="text-center mb-4">Crear cuenta</h2>
+
+                  <Register onShowLogin={() => setAuthPage("login")} />
+
+                  <div className="text-center mt-3">
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setAuthPage("public")}
+                    >
+                      Volver a la tienda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </PublicLayout>
+      );
+    }
+
     return (
-      <Login
-        onLogin={setUsuario}
-        onShowRegister={() => setAuthPage("register")}
+      <PublicHome
+        irLogin={() => setAuthPage("login")}
+        irRegistro={() => setAuthPage("register")}
       />
     );
   }
-
-  if (authPage === "register") {
-    return <Register onShowLogin={() => setAuthPage("login")} />;
-  }
-
-  return (
-    <PublicHome
-      irLogin={() => setAuthPage("login")}
-      irRegistro={() => setAuthPage("register")}
-    />
-  );
-}
 
   return (
     <div className="admin-layout">
