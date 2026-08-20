@@ -3,6 +3,9 @@ function PublicLayout({
   irInicio,
   irLogin,
   irRegistro,
+  irMisPedidos,
+  usuario,
+  cerrarSesion,
   busqueda = "",
   setBusqueda = () => {},
   cantidadCarrito = 0,
@@ -37,19 +40,43 @@ function PublicLayout({
           </div>
 
           <div className="col-md-4 text-md-end">
-            <button
-              className="btn btn-link text-decoration-none me-2"
-              onClick={irLogin}
-            >
-              Iniciar sesión
-            </button>
+            {usuario ? (
+              <>
+                <span className="me-2">
+                  Bienvenido, <strong>{usuario.nombre}</strong>
+                </span>
 
-            <button
-              className="btn btn-outline-primary me-2"
-              onClick={irRegistro}
-            >
-              Crear cuenta
-            </button>
+                <button
+                  className="btn btn-outline-primary me-2"
+                  onClick={irMisPedidos}
+                >
+                  Mis pedidos
+                </button>
+
+                <button
+                  className="btn btn-outline-danger me-2"
+                  onClick={cerrarSesion}
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="btn btn-link text-decoration-none me-2"
+                  onClick={irLogin}
+                >
+                  Iniciar sesión
+                </button>
+
+                <button
+                  className="btn btn-outline-primary me-2"
+                  onClick={irRegistro}
+                >
+                  Crear cuenta
+                </button>
+              </>
+            )}
 
             <button className="btn btn-primary">
               Carrito: {cantidadCarrito} producto(s) - $

@@ -124,7 +124,6 @@ function App() {
         </PublicLayout>
       );
     }
-
     return (
       <PublicHome
         irLogin={() => setAuthPage("login")}
@@ -132,6 +131,18 @@ function App() {
       />
     );
   }
+
+    if (esCliente) {
+      return (
+        <PublicHome
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          usuario={usuario}
+          cerrarSesion={cerrarSesion}
+        />
+      );
+    }
 
   return (
     <div className="admin-layout">

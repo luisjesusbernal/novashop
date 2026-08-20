@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API_URL from "../services/api";
 import PublicLayout from "../components/PublicLayout";
 
-function PublicHome({ irLogin, irRegistro }) {
+function PublicHome({ irLogin, irRegistro, irMisPedidos, usuario, cerrarSesion }) {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -80,8 +80,12 @@ function PublicHome({ irLogin, irRegistro }) {
 
   return (
     <PublicLayout
+      irInicio={() => {}}
       irLogin={irLogin}
       irRegistro={irRegistro}
+      irMisPedidos={irMisPedidos}
+      usuario={usuario}
+      cerrarSesion={cerrarSesion}
       busqueda={busqueda}
       setBusqueda={setBusqueda}
       cantidadCarrito={cantidadCarrito}
@@ -90,8 +94,8 @@ function PublicHome({ irLogin, irRegistro }) {
       <section className="p-4 mb-4 bg-light rounded text-center">
         <h2 className="fw-bold">Catálogo de productos</h2>
         <p className="mb-0">
-          Explora productos disponibles para impresión 3D, miniaturas, accesorios
-          y pequeños mundos personalizados.
+          Explora productos disponibles para impresión 3D, miniaturas,
+          accesorios y pequeños mundos personalizados.
         </p>
       </section>
 
