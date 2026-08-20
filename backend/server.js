@@ -22,7 +22,7 @@ app.use("/api/categorias", verificarToken, soloAdmin, categoriasRoutes);
 app.use("/api/productos", verificarToken, soloAdmin, productosRoutes);
 app.use("/api/usuarios", verificarToken, soloAdmin, usuariosRoutes);
 app.use("/api/dashboard", verificarToken, soloAdmin, dashboardRoutes);
-app.use("/api/pedidos", verificarToken, pedidosRoutes);
+app.use("/api/pedidos", pedidosRoutes);
 
 
 function validarPassword(password) {
