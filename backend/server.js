@@ -195,5 +195,5 @@ res.json({
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Servidor NovaShop ejecutándose en http://localhost:${PORT}`);
+  console.log(`Servidor NovaShop ejecutándose en el puerto ${PORT}`);
 });
