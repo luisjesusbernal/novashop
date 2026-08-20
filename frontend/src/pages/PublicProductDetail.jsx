@@ -33,8 +33,15 @@ function PublicProductDetail({
   const stock = Number(producto.stock || 0);
   const subtotal = precio * cantidad;
 
+  const productoEnCarrito = carrito.find(
+    (item) => item.id_producto === producto.id_producto,
+  );
+
+  const cantidadEnCarrito = productoEnCarrito ? productoEnCarrito.cantidad : 0;
+  const stockDisponible = Math.max(stock - cantidadEnCarrito, 0);
+
   const aumentarCantidad = () => {
-    if (cantidad < stock) {
+    if (cantidad < stockDisponible) {
       setCantidad(cantidad + 1);
     }
   };
@@ -46,20 +53,32 @@ function PublicProductDetail({
   };
 
   const agregarAlCarrito = () => {
+    setMensaje("");
+
     if (stock <= 0) {
       setMensaje("Este producto no tiene stock disponible.");
       return;
     }
 
-    const existe = carrito.find(
-      (item) => item.id_producto === producto.id_producto
-    );
+    if (stockDisponible <= 0) {
+      setMensaje(
+        "Ya tienes en el carrito todas las unidades disponibles de este producto.",
+      );
+      return;
+    }
 
-    if (existe) {
+    if (cantidad > stockDisponible) {
+      setMensaje(
+        `Solo puedes agregar ${stockDisponible} unidad(es) más de este producto.`,
+      );
+      return;
+    }
+
+    if (productoEnCarrito) {
       const carritoActualizado = carrito.map((item) =>
         item.id_producto === producto.id_producto
           ? { ...item, cantidad: item.cantidad + cantidad }
-          : item
+          : item,
       );
 
       setCarrito(carritoActualizado);
@@ -67,7 +86,9 @@ function PublicProductDetail({
       setCarrito([...carrito, { ...producto, cantidad }]);
     }
 
-    setMensaje("Producto agregado correctamente al carrito.");
+    setMensaje(
+      `${cantidad} unidad(es) de ${producto.nombre} agregada(s) al carrito.`,
+    );
   };
 
   const calcularEnvio = () => {
@@ -159,11 +180,20 @@ function PublicProductDetail({
 
               <h2 className="fw-bold mb-1">${precio.toFixed(2)}</h2>
 
-              <p className={stock > 0 ? "text-success" : "text-danger"}>
+              <p
+                className={stockDisponible > 0 ? "text-success" : "text-danger"}
+              >
                 {stock > 0
-                  ? `Stock disponible: ${stock}`
+                  ? `Stock disponible: ${stockDisponible}`
                   : "Sin stock disponible"}
               </p>
+
+              {cantidadEnCarrito > 0 && (
+                <p className="text-muted">
+                  Ya tienes {cantidadEnCarrito} unidad(es) de este producto en
+                  tu carrito.
+                </p>
+              )}
 
               <hr />
 
@@ -184,7 +214,7 @@ function PublicProductDetail({
                   <button
                     className="btn btn-outline-secondary"
                     onClick={aumentarCantidad}
-                    disabled={cantidad >= stock}
+                    disabled={cantidad >= stockDisponible}
                   >
                     +
                   </button>
@@ -195,19 +225,17 @@ function PublicProductDetail({
                 Subtotal: <strong>${subtotal.toFixed(2)}</strong>
               </p>
 
-              {mensaje && (
-                <div className="alert alert-info">
-                  {mensaje}
-                </div>
-              )}
+              {mensaje && <div className="alert alert-info">{mensaje}</div>}
 
               <div className="d-flex flex-column flex-md-row gap-3 mt-4">
                 <button
                   className="btn btn-success flex-fill"
                   onClick={agregarAlCarrito}
-                  disabled={stock <= 0}
+                  disabled={stockDisponible <= 0}
                 >
-                  Agregar al carrito
+                  {stockDisponible > 0
+                    ? "Agregar al carrito"
+                    : "Stock en carrito completo"}
                 </button>
 
                 <button
@@ -265,8 +293,8 @@ function PublicProductDetail({
               )}
 
               <p className="text-muted mt-3 mb-0">
-                Estas opciones son simuladas por ahora. Más adelante se conectarán
-                con una API real de envíos.
+                Estas opciones son simuladas por ahora. Más adelante se
+                conectarán con una API real de envíos.
               </p>
             </div>
           </div>
@@ -283,9 +311,7 @@ function PublicProductDetail({
                 Mercado Pago próximamente
               </div>
 
-              <div className="border rounded p-3 mb-2">
-                PayPal próximamente
-              </div>
+              <div className="border rounded p-3 mb-2">PayPal próximamente</div>
 
               <div className="border rounded p-3">
                 Tarjeta de crédito o débito próximamente

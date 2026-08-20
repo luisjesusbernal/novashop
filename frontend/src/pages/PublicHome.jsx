@@ -155,7 +155,8 @@ function PublicHome({
                 <div className="card h-100 shadow-sm">
                   <div
                     className="bg-light d-flex align-items-center justify-content-center"
-                    style={{ height: "180px" }}
+                    style={{ height: "200px", cursor: "pointer" }}
+                    onClick={() => irProducto(producto)}
                   >
                     {producto.imagen ? (
                       <img
@@ -175,7 +176,13 @@ function PublicHome({
                       {producto.categoria || "Sin categoría"}
                     </span>
 
-                    <h5 className="card-title">{producto.nombre}</h5>
+                    <h5
+                      className="card-title"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => irProducto(producto)}
+                    >
+                      {producto.nombre}
+                    </h5>
 
                     <p className="card-text text-muted">
                       {producto.descripcion}
@@ -193,7 +200,7 @@ function PublicHome({
                     >
                       Ver detalle
                     </button>
-                    
+
                     <button
                       className="btn btn-success w-100"
                       onClick={() => agregarAlCarrito(producto)}
