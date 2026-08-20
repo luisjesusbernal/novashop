@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import API_URL from "../services/api";
 import PublicLayout from "../components/PublicLayout";
 
-function PublicHome({ irLogin, irRegistro, irMisPedidos, usuario, cerrarSesion }) {
+function PublicHome({
+  irInicio,
+  irLogin,
+  irRegistro,
+  irMisPedidos,
+  usuario,
+  cerrarSesion,
+}) {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -80,7 +87,7 @@ function PublicHome({ irLogin, irRegistro, irMisPedidos, usuario, cerrarSesion }
 
   return (
     <PublicLayout
-      irInicio={() => {}}
+      irInicio={irInicio}
       irLogin={irLogin}
       irRegistro={irRegistro}
       irMisPedidos={irMisPedidos}

@@ -132,17 +132,33 @@ function App() {
     );
   }
 
-    if (esCliente) {
-      return (
-        <PublicHome
-          irLogin={() => setAuthPage("login")}
-          irRegistro={() => setAuthPage("register")}
-          irMisPedidos={() => setPaginaActual("mis-pedidos")}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-        />
-      );
-    }
+ if (esCliente) {
+  if (paginaActual === "mis-pedidos") {
+    return (
+      <PublicLayout
+        irInicio={() => setPaginaActual("inicio")}
+        irLogin={() => setAuthPage("login")}
+        irRegistro={() => setAuthPage("register")}
+        irMisPedidos={() => setPaginaActual("mis-pedidos")}
+        usuario={usuario}
+        cerrarSesion={cerrarSesion}
+      >
+        <MisPedidos />
+      </PublicLayout>
+    );
+  }
+
+  return (
+    <PublicHome
+      irInicio={() => setPaginaActual("inicio")}
+      irLogin={() => setAuthPage("login")}
+      irRegistro={() => setAuthPage("register")}
+      irMisPedidos={() => setPaginaActual("mis-pedidos")}
+      usuario={usuario}
+      cerrarSesion={cerrarSesion}
+    />
+  );
+}
 
   return (
     <div className="admin-layout">
