@@ -1,6 +1,8 @@
 import { useState } from "react";
+import API_URL from "../services/api";
 
-function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
+function PublicCheckout({ carrito, usuario, setCarrito, irInicio, irLogin }) {
+
   const [datos, setDatos] = useState({
     nombre: usuario?.nombre || "",
     apellidos: "",
@@ -17,8 +19,12 @@ function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
     aceptaTerminos: false,
   });
 
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
+  const [pedidoCreado, setPedidoCreado] = useState(null);
+
   const actualizarDato = (e) => {
-    const { name, value, type, checked } = e.target;
+  const { name, value, type, checked } = e.target;
 
     setDatos({
       ...datos,
@@ -40,30 +46,90 @@ function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
 
   const total = subtotal + costoEnvio;
 
-  const finalizarCheckoutVisual = () => {
+  const finalizarCheckoutReal = async () => {
+    setError("");
+
     if (carrito.length === 0) {
-      alert("Tu carrito está vacío.");
+      setError("Tu carrito está vacío.");
       return;
     }
 
     if (!datos.nombre || !datos.correo || !datos.telefono) {
-      alert("Completa los datos personales obligatorios.");
+      setError("Completa los datos personales obligatorios.");
       return;
     }
 
-    if (!datos.direccion || !datos.codigoPostal || !datos.ciudad || !datos.estado) {
-      alert("Completa los datos de dirección obligatorios.");
+    if (
+      !datos.direccion ||
+      !datos.codigoPostal ||
+      !datos.ciudad ||
+      !datos.estado
+    ) {
+      setError("Completa los datos de dirección obligatorios.");
       return;
     }
 
     if (!datos.aceptaTerminos) {
-      alert("Debes aceptar los términos y condiciones.");
+      setError("Debes aceptar los términos y condiciones.");
       return;
     }
 
-    alert(
-      "Checkout visual completado. En el siguiente paso conectaremos este flujo con el backend."
-    );
+    const productosPedido = carrito.map((item) => ({
+      id_producto: item.id_producto,
+      cantidad: item.cantidad,
+    }));
+
+    const pedido = {
+      productos: productosPedido,
+      cliente: {
+        nombre: datos.nombre,
+        correo: datos.correo,
+        telefono: datos.telefono,
+      },
+      direccion: {
+        direccion_entrega: datos.direccion,
+        direccion_extra: datos.direccionExtra,
+        codigo_postal: datos.codigoPostal,
+        ciudad: datos.ciudad,
+        estado_entrega: datos.estado,
+        pais: datos.pais,
+      },
+      metodo_pago: datos.metodoPago,
+      metodo_envio: datos.metodoEnvio,
+    };
+
+    try {
+      setCargando(true);
+
+      const token = localStorage.getItem("token");
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const respuesta = await fetch(`${API_URL}/pedidos`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(pedido),
+      });
+
+      const data = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(data.mensaje || "Error al crear el pedido");
+      }
+
+      setPedidoCreado(data);
+      setCarrito([]);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setCargando(false);
+    }
   };
 
   if (carrito.length === 0) {
@@ -88,7 +154,8 @@ function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
       {!usuario && (
         <div className="alert alert-info d-flex justify-content-between align-items-center">
           <span>
-            Puedes comprar como invitado o iniciar sesión para guardar tu historial de pedidos.
+            Puedes comprar como invitado o iniciar sesión para guardar tu
+            historial de pedidos.
           </span>
 
           <button className="btn btn-outline-primary btn-sm" onClick={irLogin}>
@@ -204,7 +271,9 @@ function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label">Dirección complementaria</label>
+                      <label className="form-label">
+                        Dirección complementaria
+                      </label>
                       <input
                         type="text"
                         className="form-control"
@@ -416,11 +485,33 @@ function PublicCheckout({ carrito, usuario, irInicio, irLogin }) {
                 </label>
               </div>
 
+              {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+              {pedidoCreado && (
+                <div className="alert alert-success mt-3">
+                  <h5 className="fw-bold">Pedido creado correctamente</h5>
+                  <p className="mb-1">
+                    Número de pedido: {pedidoCreado.id_pedido}
+                  </p>
+                  <p className="mb-1">
+                    Total: ${Number(pedidoCreado.total).toFixed(2)}
+                  </p>
+                  <p className="mb-0">Cliente: {pedidoCreado.tipo_cliente}</p>
+
+                  <button
+                    className="btn btn-primary w-100 mt-3"
+                    onClick={irInicio}
+                  >
+                    Volver a la tienda
+                  </button>
+                </div>
+              )}
               <button
                 className="btn btn-success w-100 mt-4"
-                onClick={finalizarCheckoutVisual}
+                onClick={finalizarCheckoutReal}
+                disabled={cargando || pedidoCreado}
               >
-                Confirmar compra
+                {cargando ? "Procesando pedido..." : "Confirmar compra"}
               </button>
             </div>
           </div>

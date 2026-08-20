@@ -193,6 +193,7 @@ const abrirCheckout = () => {
           <PublicCheckout
             carrito={carrito}
             usuario={usuario}
+            setCarrito={setCarrito}
             irInicio={volverATienda}
             irLogin={() => setAuthPage("login")}
           />
@@ -251,6 +252,7 @@ const abrirCheckout = () => {
           <PublicCheckout
             carrito={carrito}
             usuario={usuario}
+            setCarrito={setCarrito}
             irInicio={() => setPaginaActual("inicio")}
             irLogin={() => setAuthPage("login")}
           />
