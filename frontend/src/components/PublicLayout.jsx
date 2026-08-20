@@ -4,6 +4,7 @@ function PublicLayout({
   irLogin,
   irRegistro,
   irMisPedidos,
+  irCarrito,
   usuario,
   cerrarSesion,
   busqueda = "",
@@ -78,7 +79,7 @@ function PublicLayout({
               </>
             )}
 
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={irCarrito}>
               Carrito: {cantidadCarrito} producto(s) - $
               {totalCarrito.toFixed(2)}
             </button>

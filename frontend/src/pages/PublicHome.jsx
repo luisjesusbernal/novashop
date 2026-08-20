@@ -7,12 +7,15 @@ function PublicHome({
   irLogin,
   irRegistro,
   irMisPedidos,
+  irCarrito,
   usuario,
   cerrarSesion,
+  carrito,
+  setCarrito,
 }) {
   const [productos, setProductos] = useState([]);
-  const [carrito, setCarrito] = useState([]);
   const [busqueda, setBusqueda] = useState("");
+  const [productoAgregado, setProductoAgregado] = useState(null);
 
   useEffect(() => {
     let componenteActivo = true;
@@ -53,6 +56,7 @@ function PublicHome({
     } else {
       setCarrito([...carrito, { ...producto, cantidad: 1 }]);
     }
+    setProductoAgregado(producto);
   };
 
   const normalizarTexto = (texto = "") => {
@@ -91,6 +95,7 @@ function PublicHome({
       irLogin={irLogin}
       irRegistro={irRegistro}
       irMisPedidos={irMisPedidos}
+      irCarrito={irCarrito}
       usuario={usuario}
       cerrarSesion={cerrarSesion}
       busqueda={busqueda}
@@ -192,6 +197,83 @@ function PublicHome({
           </div>
         </section>
       </div>
+      {productoAgregado && (
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title text-success fw-bold">
+                  Producto añadido correctamente al carrito
+                </h5>
+
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setProductoAgregado(null)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <div className="row align-items-center">
+                  <div className="col-md-4">
+                    <div
+                      className="bg-light d-flex align-items-center justify-content-center"
+                      style={{ height: "180px" }}
+                    >
+                      {productoAgregado.imagen ? (
+                        <img
+                          src={productoAgregado.imagen}
+                          alt={productoAgregado.nombre}
+                          className="img-fluid h-100 object-fit-cover"
+                        />
+                      ) : (
+                        <span className="display-4 fw-bold text-primary">
+                          {productoAgregado.nombre.charAt(0)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <h5 className="fw-bold">{productoAgregado.nombre}</h5>
+                    <p className="mb-1">
+                      ${Number(productoAgregado.precio).toFixed(2)}
+                    </p>
+                    <p className="text-muted mb-0">Cantidad agregada: 1</p>
+                  </div>
+
+                  <div className="col-md-4">
+                    <h5 className="fw-bold">Tu carrito</h5>
+                    <p className="mb-1">Productos: {cantidadCarrito}</p>
+                    <p className="mb-3">Total: ${totalCarrito.toFixed(2)}</p>
+
+                    <button
+                      className="btn btn-outline-secondary w-100 mb-2"
+                      onClick={() => setProductoAgregado(null)}
+                    >
+                      Continuar comprando
+                    </button>
+
+                    <button
+                      className="btn btn-success w-100"
+                      onClick={() => {
+                        setProductoAgregado(null);
+                        irCarrito();
+                      }}
+                    >
+                      Ir al carrito
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PublicLayout>
   );
 }

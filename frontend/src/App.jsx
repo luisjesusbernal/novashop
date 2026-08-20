@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Productos from "./pages/Productos";
@@ -11,6 +11,7 @@ import MisPedidos from "./pages/MisPedidos";
 import Register from "./pages/Register";
 import PublicHome from "./pages/PublicHome";
 import PublicLayout from "./components/PublicLayout";
+import PublicCart from "./pages/PublicCart";
 import "./styles.css";
 
 function App() {
@@ -22,17 +23,45 @@ function App() {
   const [paginaActual, setPaginaActual] = useState("inicio");
   const [authPage, setAuthPage] = useState("public");
 
+  const [carrito, setCarrito] = useState(() => {
+    const carritoGuardado = localStorage.getItem("carrito");
+    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
   const cerrarSesion = () => {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("token");
-    localStorage.removeItem("carrito");
-    setUsuario(null);
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("token");
+  setUsuario(null);
+  setPaginaActual("inicio");
+  setAuthPage("public");
+};
+
+  const esAdmin = usuario?.id_rol === 1;
+  const esCliente = usuario?.id_rol === 2;
+
+  const totalCarrito = carrito.reduce(
+    (total, item) => total + Number(item.precio) * item.cantidad,
+    0
+  );
+
+  const cantidadCarrito = carrito.reduce(
+    (total, item) => total + item.cantidad,
+    0
+  );
+
+  const volverATienda = () => {
     setPaginaActual("inicio");
     setAuthPage("public");
   };
 
-  const esAdmin = usuario?.id_rol === 1;
-  const esCliente = usuario?.id_rol === 2;
+  const abrirCarrito = () => {
+  setPaginaActual("carrito");
+  setAuthPage("public");
+};
 
   const renderizarPagina = () => {
     if (esCliente) {
@@ -63,9 +92,12 @@ function App() {
     if (authPage === "login") {
       return (
         <PublicLayout
-          irInicio={() => setAuthPage("public")}
+          irInicio={volverATienda}
           irLogin={() => setAuthPage("login")}
           irRegistro={() => setAuthPage("register")}
+          irCarrito={abrirCarrito}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
         >
           <section className="row justify-content-center">
             <div className="col-md-6 col-lg-5">
@@ -79,10 +111,7 @@ function App() {
                   />
 
                   <div className="text-center mt-3">
-                    <button
-                      className="btn btn-link"
-                      onClick={() => setAuthPage("public")}
-                    >
+                    <button className="btn btn-link" onClick={volverATienda}>
                       Volver a la tienda
                     </button>
                   </div>
@@ -97,9 +126,12 @@ function App() {
     if (authPage === "register") {
       return (
         <PublicLayout
-          irInicio={() => setAuthPage("public")}
+          irInicio={volverATienda}
           irLogin={() => setAuthPage("login")}
           irRegistro={() => setAuthPage("register")}
+          irCarrito={abrirCarrito}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
         >
           <section className="row justify-content-center">
             <div className="col-md-8 col-lg-6">
@@ -110,10 +142,7 @@ function App() {
                   <Register onShowLogin={() => setAuthPage("login")} />
 
                   <div className="text-center mt-3">
-                    <button
-                      className="btn btn-link"
-                      onClick={() => setAuthPage("public")}
-                    >
+                    <button className="btn btn-link" onClick={volverATienda}>
                       Volver a la tienda
                     </button>
                   </div>
@@ -124,41 +153,93 @@ function App() {
         </PublicLayout>
       );
     }
+
+    if (paginaActual === "carrito") {
+      return (
+        <PublicLayout
+          irInicio={volverATienda}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irCarrito={abrirCarrito}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicCart
+            carrito={carrito}
+            setCarrito={setCarrito}
+            irInicio={volverATienda}
+          />
+        </PublicLayout>
+      );
+    }
+
     return (
       <PublicHome
+        irInicio={volverATienda}
         irLogin={() => setAuthPage("login")}
         irRegistro={() => setAuthPage("register")}
+        irCarrito={abrirCarrito}
+        carrito={carrito}
+        setCarrito={setCarrito}
       />
     );
   }
 
- if (esCliente) {
-  if (paginaActual === "mis-pedidos") {
+  if (esCliente) {
+    if (paginaActual === "carrito") {
+      return (
+        <PublicLayout
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irCarrito={abrirCarrito}
+          usuario={usuario}
+          cerrarSesion={cerrarSesion}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicCart
+            carrito={carrito}
+            setCarrito={setCarrito}
+            irInicio={() => setPaginaActual("inicio")}
+          />
+        </PublicLayout>
+      );
+    }
+
+    if (paginaActual === "mis-pedidos") {
+      return (
+        <PublicLayout
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irCarrito={abrirCarrito}
+          usuario={usuario}
+          cerrarSesion={cerrarSesion}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <MisPedidos />
+        </PublicLayout>
+      );
+    }
+
     return (
-      <PublicLayout
+      <PublicHome
         irInicio={() => setPaginaActual("inicio")}
         irLogin={() => setAuthPage("login")}
         irRegistro={() => setAuthPage("register")}
         irMisPedidos={() => setPaginaActual("mis-pedidos")}
+        irCarrito={abrirCarrito}
         usuario={usuario}
         cerrarSesion={cerrarSesion}
-      >
-        <MisPedidos />
-      </PublicLayout>
+        carrito={carrito}
+        setCarrito={setCarrito}
+      />
     );
   }
-
-  return (
-    <PublicHome
-      irInicio={() => setPaginaActual("inicio")}
-      irLogin={() => setAuthPage("login")}
-      irRegistro={() => setAuthPage("register")}
-      irMisPedidos={() => setPaginaActual("mis-pedidos")}
-      usuario={usuario}
-      cerrarSesion={cerrarSesion}
-    />
-  );
-}
 
   return (
     <div className="admin-layout">
