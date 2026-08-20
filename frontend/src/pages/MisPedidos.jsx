@@ -7,6 +7,18 @@ function MisPedidos() {
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(true);
 
+  const formatoMoneda = (valor) => {
+    return `$${Number(valor || 0).toFixed(2)}`;
+  };
+
+  const formatoFecha = (fecha) => {
+    return fecha ? new Date(fecha).toLocaleString() : "No registrada";
+  };
+
+  const mostrarDato = (valor) => {
+    return valor || "No registrado";
+  };
+
   useEffect(() => {
     let activo = true;
 
@@ -82,7 +94,7 @@ function MisPedidos() {
   return (
     <main className="content">
       <h1>Mis pedidos</h1>
-      <p>Consulta el historial de tus compras en NovaShop</p>
+      <p>Consulta el historial de tus compras en TyrForge</p>
 
       {mensaje && <p className="info-message">{mensaje}</p>}
 
@@ -94,6 +106,8 @@ function MisPedidos() {
             <tr>
               <th>Folio</th>
               <th>Fecha</th>
+              <th>Subtotal</th>
+              <th>Envío</th>
               <th>Total</th>
               <th>Estado</th>
               <th>Pago</th>
@@ -105,8 +119,10 @@ function MisPedidos() {
             {pedidos.map((pedido) => (
               <tr key={pedido.id_pedido}>
                 <td>{pedido.id_pedido}</td>
-                <td>{new Date(pedido.fecha_pedido).toLocaleString()}</td>
-                <td>${Number(pedido.total).toFixed(2)}</td>
+                <td>{formatoFecha(pedido.fecha_pedido)}</td>
+                <td>{formatoMoneda(pedido.subtotal)}</td>
+                <td>{formatoMoneda(pedido.costo_envio)}</td>
+                <td>{formatoMoneda(pedido.total)}</td>
                 <td>
                   <span className="status-badge">{pedido.estado}</span>
                 </td>
@@ -124,7 +140,7 @@ function MisPedidos() {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan="6">Todavía no tienes pedidos registrados</td>
+                <td colSpan="8">Todavía no tienes pedidos registrados</td>
               </tr>
             )}
           </tbody>
@@ -134,29 +150,85 @@ function MisPedidos() {
       {detallePedido && (
         <section className="table-card order-detail-card">
           <div className="detail-header">
-            <h2>Detalle del pedido #{detallePedido.pedido.id_pedido}</h2>
+            <div>
+              <h2>Detalle del pedido #{detallePedido.pedido.id_pedido}</h2>
+              <p>
+                Fecha: {formatoFecha(detallePedido.pedido.fecha_pedido)}
+              </p>
+            </div>
+
             <button className="secondary-button" onClick={cerrarDetalle}>
               Cerrar
             </button>
           </div>
 
           <div className="order-summary">
-            <p>
-              <strong>Total:</strong> $
-              {Number(detallePedido.pedido.total).toFixed(2)}
-            </p>
-            <p>
-              <strong>Estado:</strong> {detallePedido.pedido.estado}
-            </p>
-            <p>
-              <strong>Fecha:</strong>{" "}
-              {new Date(detallePedido.pedido.fecha_pedido).toLocaleString()}
-            </p>
-            <p>
-              <strong>Método de pago:</strong>{" "}
-              {detallePedido.pedido.metodo_pago}
-            </p>
+            <div>
+              <h3>Estado del pedido</h3>
+              <p>
+                <strong>Estado:</strong> {detallePedido.pedido.estado}
+              </p>
+              <p>
+                <strong>Método de pago:</strong>{" "}
+                {detallePedido.pedido.metodo_pago}
+              </p>
+              <p>
+                <strong>Método de envío:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.metodo_envio)}
+              </p>
+            </div>
+
+            <div>
+              <h3>Datos de entrega</h3>
+              <p>
+                <strong>Nombre:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.cliente)}
+              </p>
+              <p>
+                <strong>Correo:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.correo)}
+              </p>
+              <p>
+                <strong>Teléfono:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.cliente_telefono)}
+              </p>
+              <p>
+                <strong>Dirección:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.direccion_entrega)}
+              </p>
+              <p>
+                <strong>Referencia:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.direccion_extra)}
+              </p>
+              <p>
+                <strong>Código postal:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.codigo_postal)}
+              </p>
+              <p>
+                <strong>Ciudad / Estado:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.ciudad)} /{" "}
+                {mostrarDato(detallePedido.pedido.estado_entrega)}
+              </p>
+            </div>
+
+            <div>
+              <h3>Resumen</h3>
+              <p>
+                <strong>Subtotal:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.subtotal)}
+              </p>
+              <p>
+                <strong>Envío:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.costo_envio)}
+              </p>
+              <p>
+                <strong>Total:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.total)}
+              </p>
+            </div>
           </div>
+
+          <h3>Productos del pedido</h3>
 
           <table>
             <thead>
@@ -173,8 +245,8 @@ function MisPedidos() {
                 <tr key={detalle.id_detalle}>
                   <td>{detalle.producto}</td>
                   <td>{detalle.cantidad}</td>
-                  <td>${Number(detalle.precio_unitario).toFixed(2)}</td>
-                  <td>${Number(detalle.subtotal).toFixed(2)}</td>
+                  <td>{formatoMoneda(detalle.precio_unitario)}</td>
+                  <td>{formatoMoneda(detalle.subtotal)}</td>
                 </tr>
               ))}
             </tbody>

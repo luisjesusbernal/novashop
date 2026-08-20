@@ -7,6 +7,18 @@ function Pedidos() {
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(true);
 
+  const formatoMoneda = (valor) => {
+    return `$${Number(valor || 0).toFixed(2)}`;
+  };
+
+  const formatoFecha = (fecha) => {
+    return fecha ? new Date(fecha).toLocaleString() : "No registrada";
+  };
+
+  const mostrarDato = (valor) => {
+    return valor || "No registrado";
+  };
+
   useEffect(() => {
     let activo = true;
 
@@ -93,7 +105,7 @@ function Pedidos() {
       const pedidosActualizados = pedidos.map((pedido) =>
         pedido.id_pedido === idPedido
           ? { ...pedido, estado: nuevoEstado }
-          : pedido,
+          : pedido
       );
 
       setPedidos(pedidosActualizados);
@@ -123,14 +135,6 @@ function Pedidos() {
     );
   }
 
-  if (cargando) {
-    return (
-      <main className="content">
-        <h1>Cargando pedidos...</h1>
-      </main>
-    );
-  }
-
   return (
     <main className="content">
       <h1>Pedidos</h1>
@@ -146,6 +150,7 @@ function Pedidos() {
             <tr>
               <th>ID</th>
               <th>Cliente</th>
+              <th>Tipo</th>
               <th>Correo</th>
               <th>Fecha</th>
               <th>Total</th>
@@ -160,9 +165,14 @@ function Pedidos() {
               <tr key={pedido.id_pedido}>
                 <td>{pedido.id_pedido}</td>
                 <td>{pedido.cliente}</td>
+                <td>
+                  <span className="status-badge">
+                    {pedido.tipo_cliente || "Registrado"}
+                  </span>
+                </td>
                 <td>{pedido.correo}</td>
-                <td>{new Date(pedido.fecha_pedido).toLocaleString()}</td>
-                <td>${Number(pedido.total).toFixed(2)}</td>
+                <td>{formatoFecha(pedido.fecha_pedido)}</td>
+                <td>{formatoMoneda(pedido.total)}</td>
                 <td>
                   <select
                     className="status-select"
@@ -191,7 +201,7 @@ function Pedidos() {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan="8">No hay pedidos registrados</td>
+                <td colSpan="9">No hay pedidos registrados</td>
               </tr>
             )}
           </tbody>
@@ -201,31 +211,92 @@ function Pedidos() {
       {detallePedido && (
         <section className="table-card order-detail-card">
           <div className="detail-header">
-            <h2>Detalle del pedido #{detallePedido.pedido.id_pedido}</h2>
+            <div>
+              <h2>Detalle del pedido #{detallePedido.pedido.id_pedido}</h2>
+              <p>
+                Fecha: {formatoFecha(detallePedido.pedido.fecha_pedido)}
+              </p>
+            </div>
+
             <button className="secondary-button" onClick={cerrarDetalle}>
               Cerrar
             </button>
           </div>
 
           <div className="order-summary">
-            <p>
-              <strong>Cliente:</strong> {detallePedido.pedido.cliente}
-            </p>
-            <p>
-              <strong>Correo:</strong> {detallePedido.pedido.correo}
-            </p>
-            <p>
-              <strong>Total:</strong> $
-              {Number(detallePedido.pedido.total).toFixed(2)}
-            </p>
-            <p>
-              <strong>Estado:</strong> {detallePedido.pedido.estado}
-            </p>
-            <p>
-              <strong>Método de pago:</strong>{" "}
-              {detallePedido.pedido.metodo_pago}
-            </p>
+            <div>
+              <h3>Cliente</h3>
+              <p>
+                <strong>Tipo:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.tipo_cliente)}
+              </p>
+              <p>
+                <strong>Nombre:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.cliente)}
+              </p>
+              <p>
+                <strong>Correo:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.correo)}
+              </p>
+              <p>
+                <strong>Teléfono:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.cliente_telefono)}
+              </p>
+            </div>
+
+            <div>
+              <h3>Entrega</h3>
+              <p>
+                <strong>Método de envío:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.metodo_envio)}
+              </p>
+              <p>
+                <strong>Dirección:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.direccion_entrega)}
+              </p>
+              <p>
+                <strong>Referencia:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.direccion_extra)}
+              </p>
+              <p>
+                <strong>Código postal:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.codigo_postal)}
+              </p>
+              <p>
+                <strong>Ciudad / Estado:</strong>{" "}
+                {mostrarDato(detallePedido.pedido.ciudad)} /{" "}
+                {mostrarDato(detallePedido.pedido.estado_entrega)}
+              </p>
+              <p>
+                <strong>País:</strong> {mostrarDato(detallePedido.pedido.pais)}
+              </p>
+            </div>
+
+            <div>
+              <h3>Pago y estado</h3>
+              <p>
+                <strong>Estado:</strong> {detallePedido.pedido.estado}
+              </p>
+              <p>
+                <strong>Método de pago:</strong>{" "}
+                {detallePedido.pedido.metodo_pago}
+              </p>
+              <p>
+                <strong>Subtotal:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.subtotal)}
+              </p>
+              <p>
+                <strong>Envío:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.costo_envio)}
+              </p>
+              <p>
+                <strong>Total:</strong>{" "}
+                {formatoMoneda(detallePedido.pedido.total)}
+              </p>
+            </div>
           </div>
+
+          <h3>Productos del pedido</h3>
 
           <table>
             <thead>
@@ -242,8 +313,8 @@ function Pedidos() {
                 <tr key={detalle.id_detalle}>
                   <td>{detalle.producto}</td>
                   <td>{detalle.cantidad}</td>
-                  <td>${Number(detalle.precio_unitario).toFixed(2)}</td>
-                  <td>${Number(detalle.subtotal).toFixed(2)}</td>
+                  <td>{formatoMoneda(detalle.precio_unitario)}</td>
+                  <td>{formatoMoneda(detalle.subtotal)}</td>
                 </tr>
               ))}
             </tbody>
