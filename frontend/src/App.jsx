@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import PublicHome from "./pages/PublicHome";
 import PublicLayout from "./components/PublicLayout";
 import PublicCart from "./pages/PublicCart";
+import PublicCheckout from "./pages/PublicCheckout";
 import "./styles.css";
 
 function App() {
@@ -60,6 +61,11 @@ function App() {
 
   const abrirCarrito = () => {
   setPaginaActual("carrito");
+  setAuthPage("public");
+};
+
+const abrirCheckout = () => {
+  setPaginaActual("checkout");
   setAuthPage("public");
 };
 
@@ -168,11 +174,31 @@ function App() {
             carrito={carrito}
             setCarrito={setCarrito}
             irInicio={volverATienda}
+            irCheckout={abrirCheckout}
           />
         </PublicLayout>
       );
     }
 
+    if (paginaActual === "checkout") {
+      return (
+        <PublicLayout
+          irInicio={volverATienda}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irCarrito={abrirCarrito}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicCheckout
+            carrito={carrito}
+            usuario={usuario}
+            irInicio={volverATienda}
+            irLogin={() => setAuthPage("login")}
+          />
+        </PublicLayout>
+      );
+    }
     return (
       <PublicHome
         irInicio={volverATienda}
@@ -203,6 +229,30 @@ function App() {
             carrito={carrito}
             setCarrito={setCarrito}
             irInicio={() => setPaginaActual("inicio")}
+            irCheckout={abrirCheckout}
+          />
+        </PublicLayout>
+      );
+    }
+
+    if (paginaActual === "checkout") {
+      return (
+        <PublicLayout
+          irInicio={() => setPaginaActual("inicio")}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irCarrito={abrirCarrito}
+          usuario={usuario}
+          cerrarSesion={cerrarSesion}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicCheckout
+            carrito={carrito}
+            usuario={usuario}
+            irInicio={() => setPaginaActual("inicio")}
+            irLogin={() => setAuthPage("login")}
           />
         </PublicLayout>
       );

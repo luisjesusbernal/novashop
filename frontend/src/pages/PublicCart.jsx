@@ -1,4 +1,4 @@
-function PublicCart({ carrito, setCarrito, irInicio }) {
+function PublicCart({ carrito, setCarrito, irInicio, irCheckout }) {
   const aumentarCantidad = (idProducto) => {
     const carritoActualizado = carrito.map((item) =>
       item.id_producto === idProducto
@@ -137,7 +137,10 @@ function PublicCart({ carrito, setCarrito, irInicio }) {
                   Seguir comprando
                 </button>
 
-                <button className="btn btn-outline-danger" onClick={vaciarCarrito}>
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={vaciarCarrito}
+                >
                   Vaciar carrito
                 </button>
               </div>
@@ -162,12 +165,7 @@ function PublicCart({ carrito, setCarrito, irInicio }) {
 
               <hr />
 
-              <button
-                className="btn btn-success w-100"
-                onClick={() =>
-                  alert("El checkout se implementará en el siguiente paso.")
-                }
-              >
+              <button className="btn btn-success w-100" onClick={irCheckout}>
                 Finalizar compra
               </button>
             </div>
