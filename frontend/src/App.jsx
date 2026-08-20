@@ -14,6 +14,7 @@ import PublicLayout from "./components/PublicLayout";
 import PublicCart from "./pages/PublicCart";
 import PublicCheckout from "./pages/PublicCheckout";
 import PublicOrderLookup from "./pages/PublicOrderLookup";
+import PublicProductDetail from "./pages/PublicProductDetail";
 import "./styles.css";
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
     const carritoGuardado = localStorage.getItem("carrito");
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
   });
+
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -56,9 +59,10 @@ function App() {
   );
 
   const volverATienda = () => {
-    setPaginaActual("inicio");
-    setAuthPage("public");
-  };
+  setPaginaActual("inicio");
+  setAuthPage("public");
+  setProductoSeleccionado(null);
+};
 
   const abrirCarrito = () => {
   setPaginaActual("carrito");
@@ -72,6 +76,12 @@ const abrirCheckout = () => {
 
 const abrirConsultaPedido = () => {
   setPaginaActual("consulta-pedido");
+  setAuthPage("public");
+};
+
+const abrirProducto = (producto) => {
+  setProductoSeleccionado(producto);
+  setPaginaActual("producto");
   setAuthPage("public");
 };
 
@@ -227,6 +237,28 @@ const abrirConsultaPedido = () => {
       );
     }
 
+    if (paginaActual === "producto" && productoSeleccionado) {
+      return (
+        <PublicLayout
+          irInicio={volverATienda}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irCarrito={abrirCarrito}
+          irConsultarPedido={abrirConsultaPedido}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicProductDetail
+            producto={productoSeleccionado}
+            carrito={carrito}
+            setCarrito={setCarrito}
+            irInicio={volverATienda}
+            irCarrito={abrirCarrito}
+          />
+        </PublicLayout>
+      );
+    }
+
     return (
       <PublicHome
         irInicio={volverATienda}
@@ -234,6 +266,7 @@ const abrirConsultaPedido = () => {
         irRegistro={() => setAuthPage("register")}
         irCarrito={abrirCarrito}
         irConsultarPedido={abrirConsultaPedido}
+        irProducto={abrirProducto}
         carrito={carrito}
         setCarrito={setCarrito}
       />
@@ -328,6 +361,37 @@ const abrirConsultaPedido = () => {
         </PublicLayout>
       );
     }
+
+    if (paginaActual === "producto" && productoSeleccionado) {
+      return (
+        <PublicLayout
+          irInicio={() => {
+            setPaginaActual("inicio");
+            setProductoSeleccionado(null);
+          }}
+          irLogin={() => setAuthPage("login")}
+          irRegistro={() => setAuthPage("register")}
+          irMisPedidos={() => setPaginaActual("mis-pedidos")}
+          irCarrito={abrirCarrito}
+          irConsultarPedido={abrirConsultaPedido}
+          usuario={usuario}
+          cerrarSesion={cerrarSesion}
+          cantidadCarrito={cantidadCarrito}
+          totalCarrito={totalCarrito}
+        >
+          <PublicProductDetail
+            producto={productoSeleccionado}
+            carrito={carrito}
+            setCarrito={setCarrito}
+            irInicio={() => {
+              setPaginaActual("inicio");
+              setProductoSeleccionado(null);
+            }}
+            irCarrito={abrirCarrito}
+          />
+        </PublicLayout>
+      );
+    }
     return (
       <PublicHome
         irInicio={() => setPaginaActual("inicio")}
@@ -336,6 +400,7 @@ const abrirConsultaPedido = () => {
         irMisPedidos={() => setPaginaActual("mis-pedidos")}
         irCarrito={abrirCarrito}
         irConsultarPedido={abrirConsultaPedido}
+        irProducto={abrirProducto}
         usuario={usuario}
         cerrarSesion={cerrarSesion}
         carrito={carrito}

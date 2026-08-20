@@ -9,6 +9,7 @@ function PublicHome({
   irMisPedidos,
   irCarrito,
   irConsultarPedido,
+  irProducto,
   usuario,
   cerrarSesion,
   carrito,
@@ -186,6 +187,13 @@ function PublicHome({
                   </div>
 
                   <div className="card-footer bg-white border-0">
+                    <button
+                      className="btn btn-outline-primary w-100 mb-2"
+                      onClick={() => irProducto(producto)}
+                    >
+                      Ver detalle
+                    </button>
+                    
                     <button
                       className="btn btn-success w-100"
                       onClick={() => agregarAlCarrito(producto)}
