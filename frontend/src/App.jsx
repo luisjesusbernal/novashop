@@ -41,6 +41,9 @@ function App() {
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
   const esCliente = usuario?.id_rol === 2;
+  const idProductoRuta = location.pathname.startsWith("/producto/")
+  ? location.pathname.split("/")[2]
+  : null;
 
   const totalCarrito = carrito.reduce(
     (total, item) => total + Number(item.precio) * item.cantidad,
@@ -57,9 +60,17 @@ function App() {
   }, [carrito]);
 
   useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "auto",
+  });
+}, [location.pathname]);
+
+  useEffect(() => {
     const ruta = location.pathname;
 
-    const sincronizarRuta = () => {
+      const sincronizarRuta = () => {
       const esRutaAdmin = ruta.startsWith("/admin");
       const esRutaCliente = ruta === "/mis-pedidos";
       const esRutaAuth = ruta === "/login" || ruta === "/registro";
@@ -109,6 +120,12 @@ function App() {
         setAuthPage("public");
         setProductoSeleccionado(null);
         navigate("/", { replace: true });
+        return;
+      }
+
+      if (ruta.startsWith("/producto/")) {
+        setPaginaActual("producto");
+        setAuthPage("public");
         return;
       }
 
@@ -283,7 +300,7 @@ function App() {
     setPaginaActual("producto");
     setAuthPage("public");
 
-    navigate("/producto");
+    navigate(`/producto/${producto.id_producto}`);
   };
 
   const manejarLogin = (usuarioLogin) => {
@@ -448,6 +465,7 @@ function App() {
         <PublicLayout {...publicLayoutProps}>
           <PublicProductDetail
             producto={productoSeleccionado}
+            idProducto={idProductoRuta}
             carrito={carrito}
             setCarrito={setCarrito}
             irInicio={volverATienda}
@@ -517,6 +535,7 @@ function App() {
         <PublicLayout {...clienteLayoutProps}>
           <PublicProductDetail
             producto={productoSeleccionado}
+            idProducto={idProductoRuta}
             carrito={carrito}
             setCarrito={setCarrito}
             irInicio={volverATienda}

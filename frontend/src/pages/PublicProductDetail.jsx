@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import API_URL from "../services/api";
 
 function PublicProductDetail({
   producto,
+  idProducto,
   carrito,
   setCarrito,
   irInicio,
@@ -12,13 +14,77 @@ function PublicProductDetail({
   const [envios, setEnvios] = useState([]);
   const [mensaje, setMensaje] = useState("");
 
-  if (!producto) {
+  const [productoActual, setProductoActual] = useState(producto || null);
+  const [cargandoProducto, setCargandoProducto] = useState(false);
+  const [errorProducto, setErrorProducto] = useState("");
+
+  useEffect(() => {
+    let activo = true;
+
+    async function cargarProductoPorId() {
+      if (!idProducto) {
+        setProductoActual(producto || null);
+        return;
+      }
+
+      if (producto && String(producto.id_producto) === String(idProducto)) {
+        setProductoActual(producto);
+        return;
+      }
+
+      try {
+        setCargandoProducto(true);
+        setErrorProducto("");
+
+        const respuesta = await fetch(`${API_URL}/catalogo/${idProducto}`);
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(data.mensaje || "No se pudo cargar el producto");
+        }
+
+        if (activo) {
+          setProductoActual(data);
+        }
+      } catch (error) {
+        if (activo) {
+          setErrorProducto(error.message);
+          setProductoActual(null);
+        }
+      } finally {
+        if (activo) {
+          setCargandoProducto(false);
+        }
+      }
+    }
+
+    cargarProductoPorId();
+
+    return () => {
+      activo = false;
+    };
+  }, [idProducto, producto]);
+
+  if (cargandoProducto) {
+    return (
+      <section className="card shadow-sm">
+        <div className="card-body text-center p-5">
+          <h2 className="fw-bold mb-3">Cargando producto...</h2>
+          <p className="text-muted">
+            Estamos obteniendo la información del producto.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!productoActual) {
     return (
       <section className="card shadow-sm">
         <div className="card-body text-center p-5">
           <h2 className="fw-bold mb-3">Producto no encontrado</h2>
           <p className="text-muted">
-            No se pudo cargar la información del producto.
+            {errorProducto || "No se pudo cargar la información del producto."}
           </p>
 
           <button className="btn btn-primary" onClick={irInicio}>
@@ -29,12 +95,12 @@ function PublicProductDetail({
     );
   }
 
-  const precio = Number(producto.precio || 0);
-  const stock = Number(producto.stock || 0);
+  const precio = Number(productoActual.precio || 0);
+  const stock = Number(productoActual.stock || 0);
   const subtotal = precio * cantidad;
 
   const productoEnCarrito = carrito.find(
-    (item) => item.id_producto === producto.id_producto,
+    (item) => item.id_producto === productoActual.id_producto
   );
 
   const cantidadEnCarrito = productoEnCarrito ? productoEnCarrito.cantidad : 0;
@@ -62,32 +128,32 @@ function PublicProductDetail({
 
     if (stockDisponible <= 0) {
       setMensaje(
-        "Ya tienes en el carrito todas las unidades disponibles de este producto.",
+        "Ya tienes en el carrito todas las unidades disponibles de este producto."
       );
       return;
     }
 
     if (cantidad > stockDisponible) {
       setMensaje(
-        `Solo puedes agregar ${stockDisponible} unidad(es) más de este producto.`,
+        `Solo puedes agregar ${stockDisponible} unidad(es) más de este producto.`
       );
       return;
     }
 
     if (productoEnCarrito) {
       const carritoActualizado = carrito.map((item) =>
-        item.id_producto === producto.id_producto
+        item.id_producto === productoActual.id_producto
           ? { ...item, cantidad: item.cantidad + cantidad }
-          : item,
+          : item
       );
 
       setCarrito(carritoActualizado);
     } else {
-      setCarrito([...carrito, { ...producto, cantidad }]);
+      setCarrito([...carrito, { ...productoActual, cantidad }]);
     }
 
     setMensaje(
-      `${cantidad} unidad(es) de ${producto.nombre} agregada(s) al carrito.`,
+      `${cantidad} unidad(es) de ${productoActual.nombre} agregada(s) al carrito.`
     );
   };
 
@@ -148,16 +214,16 @@ function PublicProductDetail({
                 className="bg-light d-flex align-items-center justify-content-center rounded"
                 style={{ minHeight: "420px" }}
               >
-                {producto.imagen ? (
+                {productoActual.imagen ? (
                   <img
-                    src={producto.imagen}
-                    alt={producto.nombre}
+                    src={productoActual.imagen}
+                    alt={productoActual.nombre}
                     className="img-fluid rounded"
                     style={{ maxHeight: "420px", objectFit: "contain" }}
                   />
                 ) : (
                   <span className="display-1 fw-bold text-primary">
-                    {producto.nombre.charAt(0)}
+                    {productoActual.nombre.charAt(0)}
                   </span>
                 )}
               </div>
@@ -169,20 +235,19 @@ function PublicProductDetail({
           <div className="card shadow-sm">
             <div className="card-body p-4">
               <span className="badge bg-secondary mb-3">
-                {producto.categoria || "Sin categoría"}
+                {productoActual.categoria || "Sin categoría"}
               </span>
 
-              <h1 className="fw-bold mb-3">{producto.nombre}</h1>
+              <h1 className="fw-bold mb-3">{productoActual.nombre}</h1>
 
               <p className="text-muted">
-                {producto.descripcion || "Producto de impresión 3D TyrForge."}
+                {productoActual.descripcion ||
+                  "Producto de impresión 3D TyrForge."}
               </p>
 
               <h2 className="fw-bold mb-1">${precio.toFixed(2)}</h2>
 
-              <p
-                className={stockDisponible > 0 ? "text-success" : "text-danger"}
-              >
+              <p className={stockDisponible > 0 ? "text-success" : "text-danger"}>
                 {stock > 0
                   ? `Stock disponible: ${stockDisponible}`
                   : "Sin stock disponible"}
@@ -198,7 +263,7 @@ function PublicProductDetail({
               <hr />
 
               <div className="d-flex align-items-center gap-3 mb-3">
-                <span className="fw-bold">Cantidad:</span>
+                <span className="fw-bold">Cantidad a agregar:</span>
 
                 <div className="d-flex align-items-center gap-2">
                   <button
@@ -209,7 +274,7 @@ function PublicProductDetail({
                     -
                   </button>
 
-                  <span className="fs-5 px-3">Cantidad a agregar: {cantidad}</span>
+                  <span className="fs-5 px-3">{cantidad}</span>
 
                   <button
                     className="btn btn-outline-secondary"
