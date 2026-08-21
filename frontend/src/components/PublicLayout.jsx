@@ -9,132 +9,114 @@ function PublicLayout({
   usuario,
   cerrarSesion,
   busqueda = "",
-  setBusqueda = () => {},
+  setBusqueda,
+  mostrarBuscador = false,
   cantidadCarrito = 0,
   totalCarrito = 0,
 }) {
+  const manejarBusqueda = (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <div className="public-store">
-      <div className="top-bar bg-dark text-white text-center py-2">
-        Diseño e impresión para pequeños mundos
+    <div className="public-shell">
+      <div className="tf-topbar">
+        <span>Diseño e impresión para pequeños mundos</span>
+        <span className="d-none d-md-inline">Ideas forjadas capa por capa</span>
       </div>
 
-      <header className="container py-4">
-        <div className="row align-items-center g-3">
-          <div className="col-md-3">
-            <h1 className="fw-bold mb-0">TyrForge</h1>
-            <small className="text-muted">Ideas forjadas capa por capa</small>
-          </div>
+      <header className="tf-header">
+        <div className="container">
+          <div className="tf-header-grid">
+            <button className="tf-brand" onClick={irInicio}>
+              <span className="tf-brand-mark">ᛏ</span>
 
-          <div className="col-md-5">
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Buscar en catálogo"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-              />
-              <button className="btn btn-primary" type="button">
-                Buscar
-              </button>
-            </div>
-          </div>
+              <span>
+                <strong>TyrForge</strong>
+                <small>Ideas forjadas capa por capa</small>
+              </span>
+            </button>
 
-          <div className="col-md-4 text-md-end">
-            {usuario ? (
-              <>
-                <span className="me-2">
-                  Bienvenido, <strong>{usuario.nombre}</strong>
-                </span>
+            {mostrarBuscador ? (
+              <form className="tf-search" onSubmit={manejarBusqueda}>
+                <input
+                  type="text"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar en catálogo"
+                />
 
-                <button
-                  className="btn btn-outline-primary me-2"
-                  onClick={irMisPedidos}
-                >
-                  Mis pedidos
-                </button>
-
-                <button
-                  className="btn btn-outline-danger me-2"
-                  onClick={cerrarSesion}
-                >
-                  Salir
-                </button>
-              </>
+                <button type="submit">Buscar</button>
+              </form>
             ) : (
-              <>
-                <button
-                  className="btn btn-link text-decoration-none me-2"
-                  onClick={irLogin}
-                >
-                  Iniciar sesión
-                </button>
-
-                <button
-                  className="btn btn-outline-primary me-2"
-                  onClick={irRegistro}
-                >
-                  Crear cuenta
-                </button>
-              </>
+              <div className="tf-search-placeholder">
+                Modelos, accesorios y piezas para pequeños mundos
+              </div>
             )}
 
-            <button className="btn btn-primary" onClick={irCarrito}>
-              Carrito: {cantidadCarrito} producto(s) - $
-              {totalCarrito.toFixed(2)}
-            </button>
+            <div className="tf-actions">
+              {usuario ? (
+                <>
+                  <span className="tf-user">
+                    Hola, <strong>{usuario.nombre}</strong>
+                  </span>
+
+                  {irMisPedidos && (
+                    <button className="tf-link-button" onClick={irMisPedidos}>
+                      Mis pedidos
+                    </button>
+                  )}
+
+                  <button className="tf-link-button" onClick={cerrarSesion}>
+                    Salir
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="tf-link-button" onClick={irLogin}>
+                    Iniciar sesión
+                  </button>
+
+                  <button className="tf-outline-button" onClick={irRegistro}>
+                    Crear cuenta
+                  </button>
+                </>
+              )}
+
+              <button className="tf-cart-button" onClick={irCarrito}>
+                Carrito: {cantidadCarrito} producto(s) - $
+                {totalCarrito.toFixed(2)}
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      <nav className="bg-dark">
+      <nav className="tf-nav">
         <div className="container">
-          <ul className="nav">
-            <li className="nav-item">
-              <button
-                className="nav-link text-white btn btn-link"
-                onClick={irInicio}
-              >
-                Inicio
-              </button>
-            </li>
-
-            <button
-              className="nav-link text-white btn btn-link"
-              onClick={irConsultarPedido}
-            >
-              Consultar pedido
-            </button>
-
-            <li className="nav-item">
-              <button className="nav-link text-white btn btn-link">
-                Fantasía
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button className="nav-link text-white btn btn-link">
-                Sci-Fi
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button className="nav-link text-white btn btn-link">
-                Escenografía
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button className="nav-link text-white btn btn-link">
-                Accesorios
-              </button>
-            </li>
-          </ul>
+          <button onClick={irInicio}>Inicio</button>
+          <button onClick={irConsultarPedido}>Consultar pedido</button>
+          <button>Fantasía</button>
+          <button>Sci-Fi</button>
+          <button>Escenografía</button>
+          <button>Accesorios</button>
         </div>
       </nav>
 
-      <main className="container py-4">{children}</main>
+      <main className="tf-main">
+        <div className="container">{children}</div>
+      </main>
+
+      {cantidadCarrito > 0 && (
+        <button className="tf-floating-cart" onClick={irCarrito}>
+          <span>🛒</span>
+
+          <div>
+            <strong>{cantidadCarrito} producto(s)</strong>
+            <small>${totalCarrito.toFixed(2)}</small>
+          </div>
+        </button>
+      )}
     </div>
   );
 }

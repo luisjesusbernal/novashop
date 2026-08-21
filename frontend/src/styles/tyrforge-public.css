@@ -1,0 +1,633 @@
+/* =========================
+   TYRFORGE PUBLIC DESIGN
+========================= */
+
+.public-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(176, 141, 87, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(85, 102, 91, 0.14), transparent 30%),
+    linear-gradient(180deg, #0f1113 0%, #111416 100%);
+  color: var(--tf-parchment);
+}
+
+.tf-topbar {
+  background: rgba(28, 31, 32, 0.96);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.18);
+  color: var(--tf-parchment);
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 8px 16px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.tf-header {
+  background: rgba(15, 17, 19, 0.94);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.16);
+  padding: 28px 0;
+}
+
+.tf-header-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(260px, 1fr) 360px;
+  gap: 28px;
+  align-items: center;
+}
+
+.tf-brand {
+  background: transparent;
+  border: none;
+  color: var(--tf-parchment);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  text-align: left;
+}
+
+.tf-brand:hover {
+  background: transparent;
+  color: var(--tf-brass);
+}
+
+.tf-brand-mark {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--tf-border);
+  color: var(--tf-brass);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.tf-brand strong {
+  display: block;
+  font-family: var(--tf-font-display);
+  font-size: 30px;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tf-brand small {
+  display: block;
+  color: var(--tf-text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+
+.tf-search {
+  display: flex;
+  border: 1px solid var(--tf-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(231, 226, 215, 0.95);
+}
+
+.tf-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #111416;
+  padding: 12px 16px;
+  outline: none;
+}
+
+.tf-search button {
+  border: none;
+  background: var(--tf-brass);
+  color: #0f1113;
+  font-weight: 700;
+  padding: 0 24px;
+}
+
+.tf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+}
+
+.tf-user {
+  color: var(--tf-text-muted);
+  width: 100%;
+  text-align: right;
+}
+
+.tf-link-button,
+.tf-outline-button,
+.tf-cart-button,
+.tf-primary-button,
+.tf-secondary-button,
+.tf-icon-button {
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: 0.2s ease;
+}
+
+.tf-link-button {
+  background: transparent;
+  border: none;
+  color: var(--tf-brass);
+  padding: 8px 10px;
+}
+
+.tf-link-button:hover {
+  background: rgba(176, 141, 87, 0.1);
+  color: var(--tf-parchment);
+}
+
+.tf-outline-button,
+.tf-secondary-button {
+  background: transparent;
+  border: 1px solid var(--tf-border);
+  color: var(--tf-brass);
+  padding: 10px 18px;
+}
+
+.tf-outline-button:hover,
+.tf-secondary-button:hover {
+  background: rgba(176, 141, 87, 0.12);
+  color: var(--tf-parchment);
+  border-color: var(--tf-brass);
+}
+
+.tf-cart-button,
+.tf-primary-button,
+.tf-icon-button {
+  background: linear-gradient(135deg, var(--tf-brass), #c9a66b);
+  border: 1px solid rgba(231, 226, 215, 0.14);
+  color: #101214;
+  padding: 10px 18px;
+}
+
+.tf-cart-button:hover,
+.tf-primary-button:hover,
+.tf-icon-button:hover {
+  background: linear-gradient(135deg, #c9a66b, var(--tf-brass));
+  color: #101214;
+  transform: translateY(-1px);
+}
+
+.tf-nav {
+  background: rgba(28, 31, 32, 0.92);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.14);
+}
+
+.tf-nav .container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.tf-nav button {
+  background: transparent;
+  border: none;
+  color: var(--tf-parchment);
+  padding: 14px 16px;
+  white-space: nowrap;
+}
+
+.tf-nav button:hover {
+  background: rgba(176, 141, 87, 0.12);
+  color: var(--tf-brass);
+}
+
+.tf-main {
+  padding: 34px 0 60px;
+}
+
+.tf-hero {
+  border: 1px solid var(--tf-border);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(28, 31, 32, 0.96), rgba(15, 17, 19, 0.86)),
+    radial-gradient(circle at right, rgba(176, 141, 87, 0.18), transparent 34%);
+  box-shadow: var(--tf-shadow);
+  min-height: 330px;
+  padding: 46px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 36px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tf-eyebrow {
+  color: var(--tf-brass);
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.tf-hero h1 {
+  color: var(--tf-parchment);
+  font-family: var(--tf-font-display);
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  margin: 0 0 18px;
+}
+
+.tf-hero p {
+  color: var(--tf-text-muted);
+  font-size: 17px;
+  max-width: 560px;
+}
+
+.tf-hero-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.tf-hero-card {
+  border: 1px solid var(--tf-border);
+  border-radius: 16px;
+  background: rgba(15, 17, 19, 0.72);
+  padding: 18px;
+}
+
+.tf-model-preview {
+  height: 230px;
+  border-radius: 12px;
+  border: 1px solid rgba(176, 141, 87, 0.18);
+  background:
+    radial-gradient(circle, rgba(176, 141, 87, 0.2), transparent 55%),
+    linear-gradient(180deg, #1c1f20, #0f1113);
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+}
+
+.tf-model-preview span {
+  font-family: var(--tf-font-display);
+  font-size: 72px;
+  color: var(--tf-brass);
+  letter-spacing: 0.12em;
+}
+
+.tf-hero-card strong {
+  color: var(--tf-parchment);
+}
+
+.tf-hero-card p {
+  color: var(--tf-text-muted);
+  margin: 4px 0 0;
+}
+
+.tf-feature-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--tf-border);
+  border-radius: 16px;
+  background: rgba(28, 31, 32, 0.72);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.tf-feature-row article {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 22px;
+  border-right: 1px solid rgba(176, 141, 87, 0.16);
+}
+
+.tf-feature-row article:last-child {
+  border-right: none;
+}
+
+.tf-feature-row span {
+  color: var(--tf-brass);
+  font-size: 24px;
+}
+
+.tf-feature-row strong {
+  color: var(--tf-parchment);
+}
+
+.tf-feature-row p {
+  color: var(--tf-text-muted);
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+.tf-catalog-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.tf-category-panel {
+  border: 1px solid var(--tf-border);
+  border-radius: 16px;
+  background: rgba(28, 31, 32, 0.8);
+  overflow: hidden;
+  position: sticky;
+  top: 20px;
+}
+
+.tf-category-panel h2 {
+  color: var(--tf-parchment);
+  font-family: var(--tf-font-display);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  margin: 0;
+  padding: 18px;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.18);
+  text-transform: uppercase;
+}
+
+.tf-category-panel button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+  color: var(--tf-text-muted);
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.tf-category-panel button:hover,
+.tf-category-panel button.active {
+  background: rgba(176, 141, 87, 0.12);
+  color: var(--tf-parchment);
+}
+
+.tf-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.tf-section-heading h2 {
+  color: var(--tf-parchment);
+  font-family: var(--tf-font-display);
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.tf-section-heading p {
+  color: var(--tf-text-muted);
+  margin: 0;
+}
+
+.tf-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.tf-product-card {
+  border: 1px solid var(--tf-border);
+  border-radius: 16px;
+  background: rgba(28, 31, 32, 0.86);
+  box-shadow: var(--tf-shadow);
+  overflow: hidden;
+  transition: 0.2s ease;
+}
+
+.tf-product-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(176, 141, 87, 0.55);
+}
+
+.tf-product-image {
+  width: 100%;
+  height: 230px;
+  border: none;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.14);
+  background:
+    radial-gradient(circle, rgba(176, 141, 87, 0.16), transparent 58%),
+    linear-gradient(180deg, #1c1f20, #111416);
+  display: grid;
+  place-items: center;
+}
+
+.tf-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tf-product-image span {
+  color: var(--tf-brass);
+  font-family: var(--tf-font-display);
+  font-size: 70px;
+  letter-spacing: 0.12em;
+}
+
+.tf-product-info {
+  padding: 18px;
+}
+
+.tf-category-badge {
+  background: rgba(85, 102, 91, 0.45);
+  border: 1px solid rgba(122, 127, 115, 0.38);
+  border-radius: 999px;
+  color: var(--tf-parchment);
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+}
+
+.tf-product-info h3 {
+  color: var(--tf-parchment);
+  cursor: pointer;
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.tf-product-info h3:hover {
+  color: var(--tf-brass);
+}
+
+.tf-product-info p {
+  color: var(--tf-text-muted);
+  min-height: 48px;
+  margin-bottom: 14px;
+}
+
+.tf-product-price {
+  color: var(--tf-brass);
+  display: block;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.tf-product-actions {
+  display: grid;
+  grid-template-columns: 1fr 52px;
+  gap: 10px;
+}
+
+.tf-icon-button {
+  padding: 10px;
+}
+
+.tf-empty-state {
+  border: 1px solid var(--tf-border);
+  border-radius: 16px;
+  background: rgba(28, 31, 32, 0.7);
+  color: var(--tf-text-muted);
+  padding: 32px;
+  text-align: center;
+}
+
+.tf-modal {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.tf-modal-content {
+  background: #151719;
+  border: 1px solid var(--tf-border);
+  color: var(--tf-parchment);
+}
+
+.tf-modal-content .modal-header {
+  border-bottom: 1px solid rgba(176, 141, 87, 0.18);
+}
+
+.tf-modal-product-image {
+  background:
+    radial-gradient(circle, rgba(176, 141, 87, 0.16), transparent 58%),
+    linear-gradient(180deg, #1c1f20, #111416);
+  border: 1px solid var(--tf-border);
+  border-radius: 12px;
+  display: grid;
+  height: 180px;
+  place-items: center;
+}
+
+.tf-modal-product-image span {
+  color: var(--tf-brass);
+  font-family: var(--tf-font-display);
+  font-size: 54px;
+}
+
+@media (max-width: 1200px) {
+  .tf-header-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tf-actions {
+    justify-content: flex-start;
+  }
+
+  .tf-user {
+    text-align: left;
+  }
+
+  .tf-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .tf-product-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .tf-main {
+    padding: 22px 0 44px;
+  }
+
+  .tf-hero {
+    padding: 28px;
+  }
+
+  .tf-feature-row,
+  .tf-catalog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tf-feature-row article {
+    border-right: none;
+    border-bottom: 1px solid rgba(176, 141, 87, 0.16);
+  }
+
+  .tf-feature-row article:last-child {
+    border-bottom: none;
+  }
+
+  .tf-category-panel {
+    position: static;
+  }
+
+  .tf-product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tf-search-placeholder {
+  border: 1px solid var(--tf-border);
+  border-radius: 10px;
+  background: rgba(28, 31, 32, 0.62);
+  color: var(--tf-text-muted);
+  padding: 13px 16px;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.tf-floating-cart {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1040;
+  border: 1px solid rgba(231, 226, 215, 0.16);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--tf-brass), #c9a66b);
+  color: #101214;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  min-width: 210px;
+  text-align: left;
+}
+
+.tf-floating-cart:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #c9a66b, var(--tf-brass));
+  color: #101214;
+}
+
+.tf-floating-cart span {
+  font-size: 24px;
+}
+
+.tf-floating-cart strong,
+.tf-floating-cart small {
+  display: block;
+  line-height: 1.2;
+}
+
+.tf-floating-cart small {
+  margin-top: 3px;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .tf-floating-cart {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    justify-content: center;
+  }
+}

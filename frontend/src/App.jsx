@@ -20,6 +20,7 @@ import PublicOrderLookup from "./pages/PublicOrderLookup";
 import PublicProductDetail from "./pages/PublicProductDetail";
 
 import "./styles.css";
+import "./styles/tyrforge-public.css";
 
 function App() {
   const navigate = useNavigate();

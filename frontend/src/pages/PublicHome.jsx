@@ -17,30 +17,87 @@ function PublicHome({
 }) {
   const [productos, setProductos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
+  const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [productoAgregado, setProductoAgregado] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [mensaje, setMensaje] = useState("");
 
   useEffect(() => {
-    let componenteActivo = true;
+    let activo = true;
 
     async function cargarProductos() {
       try {
         const respuesta = await fetch(`${API_URL}/catalogo`);
         const datos = await respuesta.json();
 
-        if (componenteActivo) {
-          setProductos(datos);
+        if (activo) {
+          if (!respuesta.ok) {
+            setMensaje(datos.mensaje || "No se pudieron cargar los productos");
+            setProductos([]);
+          } else {
+            setProductos(datos);
+          }
+
+          setCargando(false);
         }
       } catch (error) {
         console.error("Error al cargar catálogo:", error);
+
+        if (activo) {
+          setMensaje("No se pudo conectar con el servidor");
+          setCargando(false);
+        }
       }
     }
 
     cargarProductos();
 
     return () => {
-      componenteActivo = false;
+      activo = false;
     };
   }, []);
+
+  const normalizarTexto = (texto = "") => {
+    return texto
+      .toString()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "")
+      .replace(/[^a-z0-9]/g, "");
+  };
+
+  const categorias = [
+    "Todos",
+    ...new Set(productos.map((producto) => producto.categoria).filter(Boolean)),
+  ];
+
+  const productosFiltrados = productos.filter((producto) => {
+    const textoProducto = normalizarTexto(
+      `${producto.nombre} ${producto.descripcion} ${producto.categoria}`
+    );
+
+    const textoBusqueda = normalizarTexto(busqueda);
+
+    const coincideBusqueda = textoProducto.includes(textoBusqueda);
+
+    const coincideCategoria =
+      categoriaActiva === "Todos" || producto.categoria === categoriaActiva;
+
+    return coincideBusqueda && coincideCategoria;
+  });
+
+  const catalogoActivo = busqueda.trim() !== "" || categoriaActiva !== "Todos";
+
+  const totalCarrito = carrito.reduce(
+    (total, item) => total + Number(item.precio) * item.cantidad,
+    0
+  );
+
+  const cantidadCarrito = carrito.reduce(
+    (total, item) => total + item.cantidad,
+    0
+  );
 
   const agregarAlCarrito = (producto) => {
     const existe = carrito.find(
@@ -58,38 +115,9 @@ function PublicHome({
     } else {
       setCarrito([...carrito, { ...producto, cantidad: 1 }]);
     }
+
     setProductoAgregado(producto);
   };
-
-  const normalizarTexto = (texto = "") => {
-  return texto
-    .toString()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "")
-    .replace(/[^a-z0-9]/g, "");
-};
-
-  const productosFiltrados = productos.filter((producto) => {
-  const textoProducto = normalizarTexto(
-    `${producto.nombre} ${producto.descripcion} ${producto.categoria}`
-  );
-
-  const textoBusqueda = normalizarTexto(busqueda);
-
-  return textoProducto.includes(textoBusqueda);
-});
-
-  const totalCarrito = carrito.reduce(
-    (total, item) => total + Number(item.precio) * item.cantidad,
-    0
-  );
-
-  const cantidadCarrito = carrito.reduce(
-    (total, item) => total + item.cantidad,
-    0
-  );
 
   return (
     <PublicLayout
@@ -103,160 +131,200 @@ function PublicHome({
       cerrarSesion={cerrarSesion}
       busqueda={busqueda}
       setBusqueda={setBusqueda}
+      mostrarBuscador={true}
       cantidadCarrito={cantidadCarrito}
       totalCarrito={totalCarrito}
     >
-      <section className="p-4 mb-4 bg-light rounded text-center">
-        <h2 className="fw-bold">Catálogo de productos</h2>
-        <p className="mb-0">
-          Explora productos disponibles para impresión 3D, miniaturas,
-          accesorios y pequeños mundos personalizados.
-        </p>
-      </section>
+      {!catalogoActivo && (
+        <section className="tf-hero">
+          <div>
+            <span className="tf-eyebrow">TyrForge 3D</span>
 
-      <div className="row">
-        <aside className="col-md-3 mb-4">
-          <div className="card">
-            <div className="card-header fw-bold text-center">Categorías</div>
+            <h1>Diseño e impresión para pequeños mundos.</h1>
 
-            <div className="list-group list-group-flush">
-              <button className="list-group-item list-group-item-action">
-                Todos los productos
+            <p>
+              Modelos, accesorios y piezas impresas en 3D para coleccionistas,
+              terrarios, escenografía y mundos en miniatura.
+            </p>
+
+            <div className="tf-hero-actions">
+              <button
+                className="tf-primary-button"
+                onClick={() => {
+                  document
+                    .getElementById("tf-catalogo")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Explorar modelos
               </button>
 
-              <button className="list-group-item list-group-item-action">
-                Tecnología
-              </button>
-
-              <button className="list-group-item list-group-item-action">
-                Accesorios
-              </button>
-
-              <button className="list-group-item list-group-item-action">
-                Fantasía
-              </button>
-
-              <button className="list-group-item list-group-item-action">
-                Sci-Fi
+              <button
+                className="tf-secondary-button"
+                onClick={irConsultarPedido}
+              >
+                Consultar pedido
               </button>
             </div>
           </div>
+
+          <div className="tf-hero-card">
+            <div className="tf-model-preview">
+              <span>TF</span>
+            </div>
+
+            <div>
+              <strong>Modelos listos para imprimir</strong>
+              <p>Catálogo inicial en expansión.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!catalogoActivo && (
+        <section className="tf-feature-row">
+          <article>
+            <span>⬡</span>
+            <div>
+              <strong>Impresión 3D</strong>
+              <p>Piezas funcionales y decorativas.</p>
+            </div>
+          </article>
+
+          <article>
+            <span>◇</span>
+            <div>
+              <strong>Detalle</strong>
+              <p>Diseños para pequeños mundos.</p>
+            </div>
+          </article>
+
+          <article>
+            <span>▣</span>
+            <div>
+              <strong>Envíos</strong>
+              <p>Opciones locales y nacionales.</p>
+            </div>
+          </article>
+        </section>
+      )}
+      <section className="tf-catalog-layout" id="tf-catalogo">
+        <aside className="tf-category-panel">
+          <h2>Categorías</h2>
+
+          {categorias.map((categoria) => (
+            <button
+              key={categoria}
+              className={categoriaActiva === categoria ? "active" : ""}
+              onClick={() => setCategoriaActiva(categoria)}
+            >
+              {categoria === "Todos" ? "Todos los productos" : categoria}
+            </button>
+          ))}
         </aside>
 
-        <section className="col-md-9">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h3 className="mb-0">Productos disponibles</h3>
-            <span>{productosFiltrados.length} producto(s)</span>
+        <div className="tf-catalog-content">
+          <div className="tf-section-heading">
+            <div>
+              <span className="tf-eyebrow">Catálogo</span>
+              <h2>Productos disponibles</h2>
+            </div>
+
+            <p>{productosFiltrados.length} producto(s)</p>
           </div>
 
-          <div className="row g-4">
-            {productosFiltrados.map((producto) => (
-              <div className="col-md-4" key={producto.id_producto}>
-                <div className="card h-100 shadow-sm">
-                  <div
-                    className="bg-light d-flex align-items-center justify-content-center"
-                    style={{ height: "200px", cursor: "pointer" }}
+          {mensaje && <div className="alert alert-warning">{mensaje}</div>}
+
+          {cargando ? (
+            <div className="tf-empty-state">Cargando productos...</div>
+          ) : productosFiltrados.length === 0 ? (
+            <div className="tf-empty-state">
+              No encontramos productos con esa búsqueda.
+            </div>
+          ) : (
+            <div className="tf-product-grid">
+              {productosFiltrados.map((producto) => (
+                <article className="tf-product-card" key={producto.id_producto}>
+                  <button
+                    className="tf-product-image"
                     onClick={() => irProducto(producto)}
                   >
                     {producto.imagen ? (
-                      <img
-                        src={producto.imagen}
-                        alt={producto.nombre}
-                        className="img-fluid h-100 object-fit-cover"
-                      />
+                      <img src={producto.imagen} alt={producto.nombre} />
                     ) : (
-                      <span className="display-5 fw-bold text-primary">
-                        {producto.nombre.charAt(0)}
-                      </span>
+                      <span>{producto.nombre.charAt(0)}</span>
                     )}
-                  </div>
+                  </button>
 
-                  <div className="card-body">
-                    <span className="badge bg-secondary mb-2">
+                  <div className="tf-product-info">
+                    <span className="tf-category-badge">
                       {producto.categoria || "Sin categoría"}
                     </span>
 
-                    <h5
-                      className="card-title"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => irProducto(producto)}
-                    >
+                    <h3 onClick={() => irProducto(producto)}>
                       {producto.nombre}
-                    </h5>
+                    </h3>
 
-                    <p className="card-text text-muted">
-                      {producto.descripcion}
-                    </p>
+                    <p>{producto.descripcion}</p>
 
-                    <p className="fw-bold fs-5">
+                    <strong className="tf-product-price">
                       ${Number(producto.precio).toFixed(2)}
-                    </p>
-                  </div>
+                    </strong>
 
-                  <div className="card-footer bg-white border-0">
-                    <button
-                      className="btn btn-outline-primary w-100 mb-2"
-                      onClick={() => irProducto(producto)}
-                    >
-                      Ver detalle
-                    </button>
+                    <div className="tf-product-actions">
+                      <button
+                        className="tf-secondary-button"
+                        onClick={() => irProducto(producto)}
+                      >
+                        Ver detalles
+                      </button>
 
-                    <button
-                      className="btn btn-success w-100"
-                      onClick={() => agregarAlCarrito(producto)}
-                    >
-                      Agregar al carrito
-                    </button>
+                      <button
+                        className="tf-icon-button"
+                        onClick={() => agregarAlCarrito(producto)}
+                      >
+                        🛒
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {productoAgregado && (
-        <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        >
+        <div className="modal fade show d-block tf-modal" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content">
+            <div className="modal-content tf-modal-content">
               <div className="modal-header">
-                <h5 className="modal-title text-success fw-bold">
-                  Producto añadido correctamente al carrito
-                </h5>
+                <h5 className="modal-title">Producto añadido correctamente</h5>
 
                 <button
                   type="button"
-                  className="btn-close"
+                  className="btn-close btn-close-white"
                   onClick={() => setProductoAgregado(null)}
                 ></button>
               </div>
 
               <div className="modal-body">
-                <div className="row align-items-center">
+                <div className="row align-items-center g-4">
                   <div className="col-md-4">
-                    <div
-                      className="bg-light d-flex align-items-center justify-content-center"
-                      style={{ height: "180px" }}
-                    >
+                    <div className="tf-modal-product-image">
                       {productoAgregado.imagen ? (
                         <img
                           src={productoAgregado.imagen}
                           alt={productoAgregado.nombre}
-                          className="img-fluid h-100 object-fit-cover"
                         />
                       ) : (
-                        <span className="display-4 fw-bold text-primary">
-                          {productoAgregado.nombre.charAt(0)}
-                        </span>
+                        <span>{productoAgregado.nombre.charAt(0)}</span>
                       )}
                     </div>
                   </div>
 
                   <div className="col-md-4">
-                    <h5 className="fw-bold">{productoAgregado.nombre}</h5>
+                    <h5>{productoAgregado.nombre}</h5>
                     <p className="mb-1">
                       ${Number(productoAgregado.precio).toFixed(2)}
                     </p>
@@ -264,19 +332,19 @@ function PublicHome({
                   </div>
 
                   <div className="col-md-4">
-                    <h5 className="fw-bold">Tu carrito</h5>
+                    <h5>Tu carrito</h5>
                     <p className="mb-1">Productos: {cantidadCarrito}</p>
                     <p className="mb-3">Total: ${totalCarrito.toFixed(2)}</p>
 
                     <button
-                      className="btn btn-outline-secondary w-100 mb-2"
+                      className="tf-secondary-button w-100 mb-2"
                       onClick={() => setProductoAgregado(null)}
                     >
                       Continuar comprando
                     </button>
 
                     <button
-                      className="btn btn-success w-100"
+                      className="tf-primary-button w-100"
                       onClick={() => {
                         setProductoAgregado(null);
                         irCarrito();
