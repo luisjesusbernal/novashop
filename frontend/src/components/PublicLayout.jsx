@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+
 function PublicLayout({
   children,
   irInicio,
@@ -14,6 +16,11 @@ function PublicLayout({
   cantidadCarrito = 0,
   totalCarrito = 0,
 }) {
+  const location = useLocation();
+
+  const mostrarCarritoFlotante =
+  cantidadCarrito > 0 && location.pathname !== "/carrito";
+
   const manejarBusqueda = (e) => {
     e.preventDefault();
   };
@@ -107,7 +114,7 @@ function PublicLayout({
         <div className="container">{children}</div>
       </main>
 
-      {cantidadCarrito > 0 && (
+      {mostrarCarritoFlotante && (
         <button className="tf-floating-cart" onClick={irCarrito}>
           <span>🛒</span>
 
