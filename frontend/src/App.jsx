@@ -38,10 +38,62 @@ function App() {
 
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  useEffect(() => {
+ useEffect(() => {
   const ruta = location.pathname;
 
   const sincronizarRuta = () => {
+    const esRutaAdmin = ruta.startsWith("/admin");
+    const esRutaCliente = ruta === "/mis-pedidos";
+    const esRutaAuth = ruta === "/login" || ruta === "/registro";
+
+    if (esRutaAdmin && !usuario) {
+      setPaginaActual("inicio");
+      setAuthPage("login");
+      setProductoSeleccionado(null);
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    if (esRutaAdmin && usuario?.id_rol !== 1) {
+      setPaginaActual("inicio");
+      setAuthPage("public");
+      setProductoSeleccionado(null);
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (esRutaCliente && !usuario) {
+      setPaginaActual("inicio");
+      setAuthPage("login");
+      setProductoSeleccionado(null);
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    if (esRutaCliente && usuario?.id_rol !== 2) {
+      setPaginaActual("inicio");
+      setAuthPage("public");
+      setProductoSeleccionado(null);
+      navigate("/admin", { replace: true });
+      return;
+    }
+
+    if (esRutaAuth && usuario?.id_rol === 1) {
+      setPaginaActual("inicio");
+      setAuthPage("public");
+      setProductoSeleccionado(null);
+      navigate("/admin", { replace: true });
+      return;
+    }
+
+    if (esRutaAuth && usuario?.id_rol === 2) {
+      setPaginaActual("inicio");
+      setAuthPage("public");
+      setProductoSeleccionado(null);
+      navigate("/", { replace: true });
+      return;
+    }
+
     switch (ruta) {
       case "/":
         setPaginaActual("inicio");
@@ -52,26 +104,31 @@ function App() {
       case "/login":
         setPaginaActual("inicio");
         setAuthPage("login");
+        setProductoSeleccionado(null);
         break;
 
       case "/registro":
         setPaginaActual("inicio");
         setAuthPage("register");
+        setProductoSeleccionado(null);
         break;
 
       case "/carrito":
         setPaginaActual("carrito");
         setAuthPage("public");
+        setProductoSeleccionado(null);
         break;
 
       case "/checkout":
         setPaginaActual("checkout");
         setAuthPage("public");
+        setProductoSeleccionado(null);
         break;
 
       case "/consultar-pedido":
         setPaginaActual("consulta-pedido");
         setAuthPage("public");
+        setProductoSeleccionado(null);
         break;
 
       case "/producto":
@@ -82,6 +139,7 @@ function App() {
       case "/mis-pedidos":
         setPaginaActual("mis-pedidos");
         setAuthPage("public");
+        setProductoSeleccionado(null);
         break;
 
       case "/admin":
@@ -123,6 +181,8 @@ function App() {
       default:
         setPaginaActual("inicio");
         setAuthPage("public");
+        setProductoSeleccionado(null);
+        navigate("/", { replace: true });
         break;
     }
   };
@@ -130,7 +190,7 @@ function App() {
   const id = setTimeout(sincronizarRuta, 0);
 
   return () => clearTimeout(id);
-}, [location.pathname]);
+}, [location.pathname, usuario, navigate]);
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -212,6 +272,7 @@ const abrirProducto = (producto) => {
 const manejarLogin = (usuarioLogin) => {
   setUsuario(usuarioLogin);
   setAuthPage("public");
+  setProductoSeleccionado(null);
 
   if (usuarioLogin.id_rol === 1) {
     setPaginaActual("inicio");
