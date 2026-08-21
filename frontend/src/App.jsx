@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+
 import Dashboard from "./pages/Dashboard";
 import Productos from "./pages/Productos";
 import Categorias from "./pages/Categorias";
 import Usuarios from "./pages/Usuarios";
 import Reportes from "./pages/Reportes";
-import ClienteHome from "./pages/ClienteHome";
 import Pedidos from "./pages/Pedidos";
 import MisPedidos from "./pages/MisPedidos";
-import Register from "./pages/Register";
+
 import PublicHome from "./pages/PublicHome";
 import PublicLayout from "./components/PublicLayout";
 import PublicCart from "./pages/PublicCart";
 import PublicCheckout from "./pages/PublicCheckout";
 import PublicOrderLookup from "./pages/PublicOrderLookup";
 import PublicProductDetail from "./pages/PublicProductDetail";
+
 import "./styles.css";
 
 function App() {
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,175 +40,6 @@ function App() {
 
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
- useEffect(() => {
-  const ruta = location.pathname;
-
-  const sincronizarRuta = () => {
-    const esRutaAdmin = ruta.startsWith("/admin");
-    const esRutaCliente = ruta === "/mis-pedidos";
-    const esRutaAuth = ruta === "/login" || ruta === "/registro";
-
-    if (esRutaAdmin && !usuario) {
-      setPaginaActual("inicio");
-      setAuthPage("login");
-      setProductoSeleccionado(null);
-      navigate("/login", { replace: true });
-      return;
-    }
-
-    if (esRutaAdmin && usuario?.id_rol !== 1) {
-      setPaginaActual("inicio");
-      setAuthPage("public");
-      setProductoSeleccionado(null);
-      navigate("/", { replace: true });
-      return;
-    }
-
-    if (esRutaCliente && !usuario) {
-      setPaginaActual("inicio");
-      setAuthPage("login");
-      setProductoSeleccionado(null);
-      navigate("/login", { replace: true });
-      return;
-    }
-
-    if (esRutaCliente && usuario?.id_rol !== 2) {
-      setPaginaActual("inicio");
-      setAuthPage("public");
-      setProductoSeleccionado(null);
-      navigate("/admin", { replace: true });
-      return;
-    }
-
-    if (esRutaAuth && usuario?.id_rol === 1) {
-      setPaginaActual("inicio");
-      setAuthPage("public");
-      setProductoSeleccionado(null);
-      navigate("/admin", { replace: true });
-      return;
-    }
-
-    if (esRutaAuth && usuario?.id_rol === 2) {
-      setPaginaActual("inicio");
-      setAuthPage("public");
-      setProductoSeleccionado(null);
-      navigate("/", { replace: true });
-      return;
-    }
-
-    switch (ruta) {
-      case "/":
-        setPaginaActual("inicio");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/login":
-        setPaginaActual("inicio");
-        setAuthPage("login");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/registro":
-        setPaginaActual("inicio");
-        setAuthPage("register");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/carrito":
-        setPaginaActual("carrito");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/checkout":
-        setPaginaActual("checkout");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/consultar-pedido":
-        setPaginaActual("consulta-pedido");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/producto":
-        setPaginaActual("producto");
-        setAuthPage("public");
-        break;
-
-      case "/mis-pedidos":
-        setPaginaActual("mis-pedidos");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin":
-        setPaginaActual("inicio");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin/productos":
-        setPaginaActual("productos");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin/categorias":
-        setPaginaActual("categorias");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin/usuarios":
-        setPaginaActual("usuarios");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin/reportes":
-        setPaginaActual("reportes");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      case "/admin/pedidos":
-        setPaginaActual("pedidos");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        break;
-
-      default:
-        setPaginaActual("inicio");
-        setAuthPage("public");
-        setProductoSeleccionado(null);
-        navigate("/", { replace: true });
-        break;
-    }
-  };
-
-  const id = setTimeout(sincronizarRuta, 0);
-
-  return () => clearTimeout(id);
-}, [location.pathname, usuario, navigate]);
-
-  useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
-
-  const cerrarSesion = () => {
-  localStorage.removeItem("usuario");
-  localStorage.removeItem("token");
-  setUsuario(null);
-  setPaginaActual("inicio");
-  setAuthPage("public");
-  setProductoSeleccionado(null);
-  navigate("/", { replace: true });
-};
-
-  const esAdmin = usuario?.id_rol === 1;
   const esCliente = usuario?.id_rol === 2;
 
   const totalCarrito = carrito.reduce(
@@ -219,97 +52,294 @@ function App() {
     0
   );
 
-  const volverATienda = () => {
-  setPaginaActual("inicio");
-  setAuthPage("public");
-  setProductoSeleccionado(null);
-  navigate("/");
-};
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
 
-const abrirLogin = () => {
-  setPaginaActual("inicio");
-  setAuthPage("login");
-  navigate("/login");
-};
+  useEffect(() => {
+    const ruta = location.pathname;
 
-const abrirRegistro = () => {
-  setPaginaActual("inicio");
-  setAuthPage("register");
-  navigate("/registro");
-};
+    const sincronizarRuta = () => {
+      const esRutaAdmin = ruta.startsWith("/admin");
+      const esRutaCliente = ruta === "/mis-pedidos";
+      const esRutaAuth = ruta === "/login" || ruta === "/registro";
 
-  const abrirCarrito = () => {
-  setPaginaActual("carrito");
-  setAuthPage("public");
-  navigate("/carrito");
-};
+      if (esRutaAdmin && !usuario) {
+        setPaginaActual("inicio");
+        setAuthPage("login");
+        setProductoSeleccionado(null);
+        navigate("/login", { replace: true });
+        return;
+      }
 
-const abrirCheckout = () => {
-  setPaginaActual("checkout");
-  setAuthPage("public");
-  navigate("/checkout");
-};
+      if (esRutaAdmin && usuario?.id_rol !== 1) {
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        navigate("/", { replace: true });
+        return;
+      }
 
-const abrirConsultaPedido = () => {
-  setPaginaActual("consulta-pedido");
-  setAuthPage("public");
-  navigate("/consultar-pedido");
-};
+      if (esRutaCliente && !usuario) {
+        setPaginaActual("inicio");
+        setAuthPage("login");
+        setProductoSeleccionado(null);
+        navigate("/login", { replace: true });
+        return;
+      }
 
-const abrirMisPedidos = () => {
-  setPaginaActual("mis-pedidos");
-  setAuthPage("public");
-  navigate("/mis-pedidos");
-};
+      if (esRutaCliente && usuario?.id_rol !== 2) {
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        navigate("/admin", { replace: true });
+        return;
+      }
 
-const abrirProducto = (producto) => {
-  setProductoSeleccionado(producto);
-  setPaginaActual("producto");
-  setAuthPage("public");
-  navigate("/producto");
-};
+      if (esRutaAuth && usuario?.id_rol === 1) {
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        navigate("/admin", { replace: true });
+        return;
+      }
 
-const manejarLogin = (usuarioLogin) => {
-  setUsuario(usuarioLogin);
-  setAuthPage("public");
-  setProductoSeleccionado(null);
+      if (esRutaAuth && usuario?.id_rol === 2) {
+        setPaginaActual("inicio");
+        setAuthPage("public");
+        setProductoSeleccionado(null);
+        navigate("/", { replace: true });
+        return;
+      }
 
-  if (usuarioLogin.id_rol === 1) {
+      switch (ruta) {
+        case "/":
+          setPaginaActual("inicio");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/login":
+          setPaginaActual("inicio");
+          setAuthPage("login");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/registro":
+          setPaginaActual("inicio");
+          setAuthPage("register");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/producto":
+          setPaginaActual("producto");
+          setAuthPage("public");
+          break;
+
+        case "/carrito":
+          setPaginaActual("carrito");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/checkout":
+          setPaginaActual("checkout");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/consultar-pedido":
+          setPaginaActual("consulta-pedido");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/mis-pedidos":
+          setPaginaActual("mis-pedidos");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin":
+          setPaginaActual("inicio");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin/productos":
+          setPaginaActual("productos");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin/categorias":
+          setPaginaActual("categorias");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin/usuarios":
+          setPaginaActual("usuarios");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin/reportes":
+          setPaginaActual("reportes");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        case "/admin/pedidos":
+          setPaginaActual("pedidos");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          break;
+
+        default:
+          setPaginaActual("inicio");
+          setAuthPage("public");
+          setProductoSeleccionado(null);
+          navigate("/", { replace: true });
+          break;
+      }
+    };
+
+    const id = setTimeout(sincronizarRuta, 0);
+
+    return () => clearTimeout(id);
+  }, [location.pathname, usuario, navigate]);
+
+  const cerrarSesion = () => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("token");
+
+    setUsuario(null);
     setPaginaActual("inicio");
-    navigate("/admin", { replace: true });
-  } else {
-    setPaginaActual("inicio");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
     navigate("/", { replace: true });
-  }
-};
-
-const abrirAdminPagina = (clave) => {
-  const rutasAdmin = {
-    inicio: "/admin",
-    productos: "/admin/productos",
-    categorias: "/admin/categorias",
-    usuarios: "/admin/usuarios",
-    reportes: "/admin/reportes",
-    pedidos: "/admin/pedidos",
   };
 
-  setPaginaActual(clave);
-  setAuthPage("public");
-  setProductoSeleccionado(null);
-  navigate(rutasAdmin[clave] || "/admin");
-};
+  const volverATienda = () => {
+    setPaginaActual("inicio");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
 
+    navigate("/");
+  };
 
-  const renderizarPagina = () => {
-    if (esCliente) {
-      if (paginaActual === "mis-pedidos") return <MisPedidos />;
-      return <ClienteHome usuario={usuario} />;
+  const abrirLogin = () => {
+    setPaginaActual("inicio");
+    setAuthPage("login");
+    setProductoSeleccionado(null);
+
+    navigate("/login");
+  };
+
+  const abrirRegistro = () => {
+    setPaginaActual("inicio");
+    setAuthPage("register");
+    setProductoSeleccionado(null);
+
+    navigate("/registro");
+  };
+
+  const abrirCarrito = () => {
+    setPaginaActual("carrito");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    navigate("/carrito");
+  };
+
+  const abrirCheckout = () => {
+    setPaginaActual("checkout");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    navigate("/checkout");
+  };
+
+  const abrirConsultaPedido = () => {
+    setPaginaActual("consulta-pedido");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    navigate("/consultar-pedido");
+  };
+
+  const abrirMisPedidos = () => {
+    setPaginaActual("mis-pedidos");
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    navigate("/mis-pedidos");
+  };
+
+  const abrirProducto = (producto) => {
+    setProductoSeleccionado(producto);
+    setPaginaActual("producto");
+    setAuthPage("public");
+
+    navigate("/producto");
+  };
+
+  const manejarLogin = (usuarioLogin) => {
+    setUsuario(usuarioLogin);
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    if (usuarioLogin.id_rol === 1) {
+      setPaginaActual("inicio");
+      navigate("/admin", { replace: true });
+    } else {
+      setPaginaActual("inicio");
+      navigate("/", { replace: true });
     }
+  };
 
+  const abrirAdminPagina = (clave) => {
+    const rutasAdmin = {
+      inicio: "/admin",
+      productos: "/admin/productos",
+      categorias: "/admin/categorias",
+      usuarios: "/admin/usuarios",
+      reportes: "/admin/reportes",
+      pedidos: "/admin/pedidos",
+    };
+
+    setPaginaActual(clave);
+    setAuthPage("public");
+    setProductoSeleccionado(null);
+
+    navigate(rutasAdmin[clave] || "/admin");
+  };
+
+  const publicLayoutProps = {
+    irInicio: volverATienda,
+    irLogin: abrirLogin,
+    irRegistro: abrirRegistro,
+    irCarrito: abrirCarrito,
+    irConsultarPedido: abrirConsultaPedido,
+    cantidadCarrito,
+    totalCarrito,
+  };
+
+  const clienteLayoutProps = {
+    ...publicLayoutProps,
+    irMisPedidos: abrirMisPedidos,
+    usuario,
+    cerrarSesion,
+  };
+
+  const renderizarPaginaAdmin = () => {
     if (paginaActual === "productos") return <Productos />;
     if (paginaActual === "categorias") return <Categorias />;
-    if (paginaActual === "usuarios")
+    if (paginaActual === "usuarios") {
       return <Usuarios usuarioActual={usuario} />;
+    }
     if (paginaActual === "reportes") return <Reportes />;
     if (paginaActual === "pedidos") return <Pedidos />;
 
@@ -328,15 +358,7 @@ const abrirAdminPagina = (clave) => {
   if (!usuario) {
     if (authPage === "login") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <section className="row justify-content-center">
             <div className="col-md-6 col-lg-5">
               <div className="card shadow-sm">
@@ -363,15 +385,7 @@ const abrirAdminPagina = (clave) => {
 
     if (authPage === "register") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <section className="row justify-content-center">
             <div className="col-md-8 col-lg-6">
               <div className="card shadow-sm">
@@ -395,19 +409,11 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "carrito") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <PublicCart
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={() => setPaginaActual("inicio")}
+            irInicio={volverATienda}
             irCheckout={abrirCheckout}
           />
         </PublicLayout>
@@ -416,20 +422,12 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "checkout") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <PublicCheckout
             carrito={carrito}
             usuario={usuario}
             setCarrito={setCarrito}
-            irInicio={() => setPaginaActual("inicio")}
+            irInicio={volverATienda}
             irLogin={abrirLogin}
             irConsultarPedido={abrirConsultaPedido}
           />
@@ -439,15 +437,7 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "consulta-pedido") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <PublicOrderLookup />
         </PublicLayout>
       );
@@ -455,20 +445,12 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "producto") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...publicLayoutProps}>
           <PublicProductDetail
             producto={productoSeleccionado}
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={() => setPaginaActual("inicio")}
+            irInicio={volverATienda}
             irCarrito={abrirCarrito}
           />
         </PublicLayout>
@@ -477,11 +459,7 @@ const abrirAdminPagina = (clave) => {
 
     return (
       <PublicHome
-        irInicio={() => setPaginaActual("inicio")}
-        irLogin={abrirLogin}
-        irRegistro={abrirRegistro}
-        irCarrito={abrirCarrito}
-        irConsultarPedido={abrirConsultaPedido}
+        {...publicLayoutProps}
         irProducto={abrirProducto}
         carrito={carrito}
         setCarrito={setCarrito}
@@ -492,22 +470,11 @@ const abrirAdminPagina = (clave) => {
   if (esCliente) {
     if (paginaActual === "carrito") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irMisPedidos={abrirMisPedidos}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...clienteLayoutProps}>
           <PublicCart
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={() => setPaginaActual("inicio")}
+            irInicio={volverATienda}
             irCheckout={abrirCheckout}
           />
         </PublicLayout>
@@ -516,23 +483,12 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "checkout") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irMisPedidos={abrirMisPedidos}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...clienteLayoutProps}>
           <PublicCheckout
             carrito={carrito}
             usuario={usuario}
             setCarrito={setCarrito}
-            irInicio={() => setPaginaActual("inicio")}
+            irInicio={volverATienda}
             irLogin={abrirLogin}
             irConsultarPedido={abrirConsultaPedido}
           />
@@ -542,18 +498,7 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "mis-pedidos") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irMisPedidos={abrirMisPedidos}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...clienteLayoutProps}>
           <MisPedidos />
         </PublicLayout>
       );
@@ -561,18 +506,7 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "consulta-pedido") {
       return (
-        <PublicLayout
-          irInicio={() => setPaginaActual("inicio")}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irMisPedidos={abrirMisPedidos}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...clienteLayoutProps}>
           <PublicOrderLookup />
         </PublicLayout>
       );
@@ -580,45 +514,22 @@ const abrirAdminPagina = (clave) => {
 
     if (paginaActual === "producto") {
       return (
-        <PublicLayout
-          irInicio={() => {
-            setPaginaActual("inicio");
-            setProductoSeleccionado(null);
-          }}
-          irLogin={abrirLogin}
-          irRegistro={abrirRegistro}
-          irMisPedidos={abrirMisPedidos}
-          irCarrito={abrirCarrito}
-          irConsultarPedido={abrirConsultaPedido}
-          usuario={usuario}
-          cerrarSesion={cerrarSesion}
-          cantidadCarrito={cantidadCarrito}
-          totalCarrito={totalCarrito}
-        >
+        <PublicLayout {...clienteLayoutProps}>
           <PublicProductDetail
             producto={productoSeleccionado}
             carrito={carrito}
             setCarrito={setCarrito}
-            irInicio={() => {
-              setPaginaActual("inicio");
-              setProductoSeleccionado(null);
-            }}
+            irInicio={volverATienda}
             irCarrito={abrirCarrito}
           />
         </PublicLayout>
       );
     }
+
     return (
       <PublicHome
-        irInicio={() => setPaginaActual("inicio")}
-        irLogin={abrirLogin}
-        irRegistro={abrirRegistro}
-        irMisPedidos={abrirMisPedidos}
-        irCarrito={abrirCarrito}
-        irConsultarPedido={abrirConsultaPedido}
+        {...clienteLayoutProps}
         irProducto={abrirProducto}
-        usuario={usuario}
-        cerrarSesion={cerrarSesion}
         carrito={carrito}
         setCarrito={setCarrito}
       />
@@ -634,47 +545,35 @@ const abrirAdminPagina = (clave) => {
           Shop
         </div>
 
-        <h3>{esAdmin ? "Menú principal" : "Menú cliente"}</h3>
+        <h3>Menú principal</h3>
 
         <nav>
-          {esAdmin ? (
-            <>
-              {botonMenu("inicio", "Inicio")}
-              {botonMenu("productos", "Productos")}
-              {botonMenu("categorias", "Categorías")}
-              {botonMenu("usuarios", "Usuarios")}
-              {botonMenu("reportes", "Reportes")}
-              {botonMenu("pedidos", "Pedidos")}
-            </>
-          ) : (
-            <>
-              {botonMenu("inicio", "Catálogo")}
-              {botonMenu("mis-pedidos", "Mis pedidos")}
-            </>
-          )}
+          {botonMenu("inicio", "Inicio")}
+          {botonMenu("productos", "Productos")}
+          {botonMenu("categorias", "Categorías")}
+          {botonMenu("usuarios", "Usuarios")}
+          {botonMenu("reportes", "Reportes")}
+          {botonMenu("pedidos", "Pedidos")}
         </nav>
       </aside>
 
       <div className="page-area">
         <header className="top-header">
           <div>
-            <h2>{esAdmin ? "NovaShop Admin" : "NovaShop Cliente"}</h2>
-            <p>
-              {esAdmin
-                ? "Sistema web de tienda en línea"
-                : "Catálogo y carrito de compras"}
-            </p>
+            <h2>NovaShop Admin</h2>
+            <p>Sistema web de tienda en línea</p>
           </div>
 
           <div className="admin-info">
             <span>
               {usuario.rol}: {usuario.nombre}
             </span>
+
             <button onClick={cerrarSesion}>Salir</button>
           </div>
         </header>
 
-        <section className="page-content">{renderizarPagina()}</section>
+        <section className="page-content">{renderizarPaginaAdmin()}</section>
       </div>
     </div>
   );
